@@ -1,0 +1,129 @@
+---
+import '../styles/site.css';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LastLap. One more.</title>
+    <meta name="description" content="LastLap is a last-one-standing race in Thakur Village, Mumbai. 6.706 km every hour until one runner remains." />
+    <meta name="theme-color" content="#070304" />
+    <meta property="og:title" content="LastLap. One more." />
+    <meta property="og:description" content="6.706 km every hour until one runner remains. Thakur Village, Mumbai." />
+    <meta property="og:image" content="/media/og.jpg" />
+    <link rel="icon" href="/favicon.png" />
+    <link rel="preload" as="image" href="/media/open.webp" media="(min-width: 761px)" />
+    <link rel="preload" as="image" href="/media/open-m.webp" media="(max-width: 760px)" />
+  </head>
+  <body>
+    <a class="skip" href="#start-list">Skip to the details</a>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="sweep" aria-hidden="true"></div>
+    <button class="sound" id="sound" type="button" aria-pressed="false">Sound off</button>
+
+    <nav class="rail" aria-label="Race hours">
+      <span class="rail-line"></span>
+      <span class="rail-dot" id="railDot"></span>
+      <a href="#open" style="--y:0%" aria-label="00, Start">00</a>
+      <a href="#loop" style="--y:25%" aria-label="06, The loop">06</a>
+      <a href="#night" style="--y:50%" aria-label="12, The night">12</a>
+      <a href="#last" style="--y:75%" aria-label="18, Last light">18</a>
+      <a href="#start-list" style="--y:100%" aria-label="24, The start list">24</a>
+    </nav>
+
+    <main>
+      <section id="open" class="chapter open">
+        <div class="pin">
+          <picture><source media="(max-width: 760px)" srcset="/media/open-m.webp" /><img class="full push" src="/media/open.webp" alt="Runners in headlamps lined up under an arch in heavy rain at night" width="2000" height="1334" fetchpriority="high" /></picture>
+          <div class="shade"></div>
+          <div class="veil"></div>
+          <header class="hero">
+            <img class="logo" src="/brand/lastlap-logo-small.webp" alt="LastLap" width="280" height="280" />
+            <div class="hero-copy">
+              <p class="hi" lang="hi">एक और</p>
+              <h1>One more.</h1>
+              <a class="act" href="#start-list">Put your name down</a>
+            </div>
+          </header>
+          <div class="clock" role="group" aria-label="Time to the next hourly start">
+            <span class="clock-label">NEXT START</span>
+            <span class="clock-time"><span id="clockM">00</span><i class="colon"></i><span id="clockS">00</span></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="loop" class="chapter loop">
+        <div class="pin">
+          <div class="plate" id="plate">
+            <img src="/media/plate.webp" alt="Aerial view of Mumbai residential towers and a lit road at night" width="1600" height="914" />
+            <canvas id="route" aria-hidden="true"></canvas>
+          </div>
+          <picture><source media="(max-width: 760px)" srcset="/media/exposure-m.webp" /><img class="full" id="exposure" src="/media/exposure.webp" alt="Long exposure photograph of vehicle lights circling a roundabout at night" width="2000" height="1200" loading="lazy" /></picture>
+          <div class="shade low"></div>
+          <div class="line" data-from="0.06" data-to="0.33"><p class="big">6.706 km.<br />One hour.</p></div>
+          <div class="line" data-from="0.35" data-to="0.53"><p class="big">8:57 per km.<br />Sounds easy.</p></div>
+          <div class="line" data-from="0.55" data-to="0.72"><p class="big">Back before the bell.<br />Or you're out.</p></div>
+          <div class="line" data-from="0.78" data-to="1.1"><p class="big">Again.<br />24 loops. 100 miles.</p></div>
+          <div class="km" data-from="0.08" data-to="0.76" aria-hidden="true">
+            <span class="clock-label">KM</span><span class="clock-time" id="km">0.00</span>
+          </div>
+          <p class="route-note" data-from="0.02" data-to="0.76">Illustrative route, not the course</p>
+        </div>
+      </section>
+
+      <section id="night" class="chapter night">
+        <div class="pin">
+          <p class="hour" id="hour" aria-hidden="true" hidden>HOUR <span id="hourN">01</span></p>
+          <figure class="shot" data-from="-0.1" data-to="0.17"><picture><source media="(max-width: 760px)" srcset="/media/tents-m.webp" /><img src="/media/tents.webp" alt="Crew tents strung with bulbs at dusk" width="2000" height="1500" loading="lazy" /></picture><figcaption><b>HOUR 01</b>Everyone is still smiling.</figcaption></figure>
+          <figure class="shot" data-from="0.17" data-to="0.34"><video muted loop playsinline preload="none" poster="/media/run-group.webp" data-src="/media/run-group.mp4"></video><figcaption><b>HOUR 06</b>The city goes to sleep.</figcaption></figure>
+          <figure class="shot" data-from="0.34" data-to="0.5"><video muted loop playsinline preload="none" poster="/media/train.webp" data-src="/media/train.mp4"></video><figcaption><b>HOUR 11</b>The last local leaves.</figcaption></figure>
+          <figure class="shot" data-from="0.5" data-to="0.66"><video muted loop playsinline preload="none" poster="/media/run-track.webp" data-src="/media/run-track.mp4"></video><figcaption><b>HOUR 15</b>No one is watching.</figcaption></figure>
+          <figure class="shot" data-from="0.66" data-to="0.83"><img src="/media/dawn.webp" alt="Mumbai towers at first light" width="1280" height="720" loading="lazy" /><figcaption><b>HOUR 24</b>Sunrise. Still running.</figcaption></figure>
+          <figure class="shot" data-from="0.83" data-to="1.1"><picture><source media="(max-width: 760px)" srcset="/media/clock-m.webp" /><img src="/media/clock.webp" alt="Runners leaving under an arch at night beside a red race clock" width="1800" height="1200" loading="lazy" /></picture><figcaption><b>HOUR 46</b>There is no finish.</figcaption></figure>
+        </div>
+      </section>
+
+      <section id="last" class="chapter last">
+        <div class="pin">
+          <picture><source media="(max-width: 760px)" srcset="/media/last-m.webp" /><img class="full" id="lastImg" src="/media/last.webp" alt="One runner in a headlamp crossing an empty field under a string-lit arch" width="1600" height="2062" loading="lazy" /></picture>
+          <div class="shade low"></div>
+          <p class="big last-line">Last one standing.</p>
+        </div>
+      </section>
+
+      <section id="one-more" class="one-more">
+        <picture><source media="(max-width: 760px)" srcset="/media/flares-m.webp" /><img class="full" src="/media/flares.webp" alt="" width="2000" height="882" loading="lazy" /></picture>
+        <div class="one-more-copy">
+          <p class="colossal" lang="hi">एक और</p>
+          <p class="under">Every hour, on the hour, until one is left.</p>
+        </div>
+      </section>
+
+      <section id="start-list" class="start-list">
+        <img class="logo-big" src="/brand/lastlap-logo-alpha.webp" alt="" width="1080" height="1080" loading="lazy" />
+        <div class="facts-wrap">
+          <h2>Put your name down.</h2>
+          <dl class="facts">
+            <div><dt>Format</dt><dd>6.706 km every hour until one runner remains</dd></div>
+            <div><dt>Where</dt><dd>Thakur Village, Mumbai</dd></div>
+            <div><dt>When</dt><dd>To be announced</dd></div>
+            <div><dt>Entry</dt><dd>Opens soon</dd></div>
+          </dl>
+          <form id="list" novalidate>
+            <label for="email">Email</label>
+            <div class="field">
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="listMsg" />
+              <button type="submit">Add me</button>
+            </div>
+            <p id="listMsg" class="msg" role="status"></p>
+          </form>
+        </div>
+        <footer>
+          <p>LastLap is an independent event, not affiliated with any other race or series. Concept preview: photographs are placeholders and show other events and places.</p>
+        </footer>
+      </section>
+    </main>
+    <script src="../scripts/main.js"></script>
+  </body>
+</html>
