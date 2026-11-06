@@ -1,44 +1,13 @@
 /* Full-screen race clock prop for shoots and race night. Keeps time from the system clock, so it never drifts. */
+import { createSegments } from './segments.js';
+
 const $ = (s) => document.querySelector(s);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const KEY = 'lastlap-clock';
-const MAP = ['abcdef', 'bc', 'abdeg', 'abcdg', 'bcfg', 'acdfg', 'acdefg', 'abc', 'abcdefg', 'abcdfg'];
-
-/* seven-segment digits, like a real race clock */
-const SEGS = {
-  a: '10,0 62,0 72,8 62,16 10,16 2,8', d: '10,134 62,134 72,142 62,150 10,150 2,142', g: '10,67 62,67 72,75 62,83 10,83 2,75',
-  f: '0,10 8,2 16,12 16,62 8,70 0,62', b: '56,12 64,2 72,10 72,62 64,70 56,62',
-  e: '0,88 8,80 16,88 16,138 8,148 0,140', c: '56,88 64,80 72,88 72,140 64,148 56,138',
-};
-const svg = $('#digits'), NS = 'http://www.w3.org/2000/svg';
-const digits = [];
-const X = [0, 90, 280, 370, 560, 650];
-X.forEach((x) => {
-  const g = document.createElementNS(NS, 'g');
-  g.setAttribute('transform', `translate(${x + 40} 10)`);
-  const parts = {};
-  for (const [k, pts] of Object.entries(SEGS)) {
-    const p = document.createElementNS(NS, 'polygon');
-    p.setAttribute('points', pts); p.setAttribute('class', 'seg');
-    g.append(p); parts[k] = p;
-  }
-  svg.append(g); digits.push({ parts, value: -1 });
-});
-[210, 490].forEach((x) => [52, 112].forEach((y) => {
-  const c = document.createElementNS(NS, 'rect');
-  c.setAttribute('x', x); c.setAttribute('y', y); c.setAttribute('width', 16); c.setAttribute('height', 16); c.setAttribute('class', 'dot');
-  svg.append(c);
-}));
-
+const svg = $('#digits');
+const drawDigits = createSegments(svg);
 function show(total) {
-  const t = Math.max(0, Math.floor(total));
-  const h = Math.floor(t / 3600) % 100, m = Math.floor(t / 60) % 60, s = t % 60;
-  [Math.floor(h / 10), h % 10, Math.floor(m / 10), m % 10, Math.floor(s / 10), s % 10].forEach((v, i) => {
-    const d = digits[i];
-    if (d.value === v) return;
-    d.value = v;
-    for (const k of 'abcdefg') d.parts[k].classList.toggle('on', MAP[v].includes(k));
-  });
+  const [h, m] = drawDigits(total);
   svg.setAttribute('aria-label', `Race clock ${String(h).padStart(2, '0')} hours ${String(m).padStart(2, '0')} minutes`);
 }
 

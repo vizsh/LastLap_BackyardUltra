@@ -4,22 +4,10 @@ dist
 .env
 .env.*
 
-# Raw stock downloads and working files
+# Raw downloads and working files
 review/
 .impeccable/mocks/
 .impeccable/build/
-
-# Other events' photographs: local concept use only, never publish
-public/media/open.webp
-public/media/open-m.webp
-public/media/tents.webp
-public/media/tents-m.webp
-public/media/clock.webp
-public/media/clock-m.webp
-public/media/last.webp
-public/media/last-m.webp
-public/media/flares.webp
-public/media/flares-m.webp
 
 # Footage from the night shoot until it is chosen and consent is confirmed
 shoot/

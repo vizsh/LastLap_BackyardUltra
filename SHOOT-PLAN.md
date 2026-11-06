@@ -1,6 +1,6 @@
 # LastLap test night: shoot plan
 
-**Goal:** replace the five borrowed event photos and make the site genuinely yours in one evening, using phones, volunteers and private ground.
+**Goal:** replace the stock imagery with your own and make the site genuinely yours in one evening, using phones, volunteers and private ground.
 
 **Recommended date:** Saturday 21 November 2026, with a short sunrise pickup on Sunday 22 November.
 
@@ -63,7 +63,7 @@ This is research, not legal advice. Confirm the current position locally, becaus
 
 ## The shot list
 
-These slots go straight into the site. **Must** shots replace borrowed photos. The framing guide is [review/shot-guide.jpg](review/shot-guide.jpg).
+These slots go straight into the site. The **Must** shots matter most for making it feel like your event.
 
 | # | Site slot | Priority | The shot | How to get it |
 |---|---|---|---|---|
@@ -142,9 +142,9 @@ If time runs short, cut from the bottom of the table. Shots 1 to 5 matter most.
 
 1. Back up everything the same night
 2. Copy the files into `C:\BackyardUltra\shoot\`, using the slot names: `opening-01`, `clock-01`, `tents-01`, `last-01`, `flares-01`, `loop-01`, `again-01`, `hour06-01`, `hour24-01`
-3. Send me your best few of each. I'll grade them, make the phone crops, redraw the route on the new rooftop photo and replace the borrowed images
+3. Send me your best few of each. I'll grade them, make the phone crops and depth maps, redraw the route on the new rooftop photo and swap them into the film
 
-Any shot we don't get stays on the replacement list. Nothing borrowed goes public.
+Any shot we don't get simply keeps its licensed stock image.
 
 ## Sources
 

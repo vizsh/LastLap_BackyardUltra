@@ -348,31 +348,25 @@ Your brief is hype first and concept only, so the first target is a working slic
 
 ## 13. Build status
 
-**Direction changed by you:** real photography and footage now lead the site. The Three.js township, light simulation and shader smoke were removed because they looked computer-made.
+**The site is now one continuous film.** A single WebGL pass renders real photographs and footage, and every cut happens on a light: the camera flies into a light in one shot and out of a light in the next.
 
-**Built and running:** Opening, The Loop (route drawn on a real aerial of Mumbai towers), a real long-exposure "Again" shot, The Night (six hours of real photos and clips), Last light, एक और over real flares, start list, live hourly clock, hour sweep, hour rail, DNF page. Stack: Astro, GSAP, Lenis.
+**What's built**
 
-**Media sources:**
+- Start gate with real loading and a choice of sound
+- Opening, The Loop, Again, The Night (seven hours of real imagery), Last light, एक और
+- Parallax on every photograph from estimated depth maps
+- Route baked into a texture, so the film reveals it with no per-frame drawing
+- Race time, loop and distance running through the whole film, and a giant clock at hour 46
+- Sound from real recordings: live mix per shot, footsteps paced by scroll speed, a bell when the loop closes
+- Reservation section with a bib that takes your name
+- Plain stacked page for reduced motion, no WebGL and no JavaScript
+- Race clock prop at `/clock`
 
-| File | Source | Status for a public launch |
-|---|---|---|
-| open, tents, clock, last, flares | Your reference photos from other events | **Must be replaced.** Other organisers and photographers own them, and people are identifiable |
-| plate, exposure | Pexels photos | Licence allows use. The exposure shot is not Mumbai |
-| run-group, train, run-track, dawn | Pexels clips | Licence allows use. Do not imply these people endorse the race |
+**All imagery is licensed.** Every image and clip on the site comes from Pexels, so local and deployed versions are identical. The earlier photos from other events are no longer used.
 
-**Refined:** the route is now a trail of tiny headlamps that shrink with distance, one LED hour counter runs through The Night, the opening lifts out of darkness, phones get their own portrait crops, and Save-Data visitors see stills instead of video.
+**Not built:** a chosen reservation service, a rulebook page, and a real route. Until `PUBLIC_LIST_ENDPOINT` is set, the form says nothing was saved. The field size isn't shown, because no number has been decided.
 
-**Race clock prop:** `/clock` is a full-screen seven-segment clock with start, pause, presets, memory across refreshes, and controls that fade away. It is hidden from search engines and not linked from the site.
-
-**Smoothness work:** route redraw reduced to a single reveal per frame, grain blending removed, opening fade moved off filters, scroll-linked paints damped once per frame, videos and images prepared one step ahead.
-
-**Bell:** optional and off by default. It rings on the real hour and when the loop closes.
-
-**Email:** set `PUBLIC_LIST_ENDPOINT` to connect a real list. Until then the form says nothing was saved.
-
-**Not built:** a chosen email service, a rulebook page, and a real route. The red line is hand-drawn on a photo of a different Mumbai area, and it's labelled illustrative.
-
-**Measured:** about 51 KB of compressed JS, 3.9 MB of media in total, loaded progressively. Lighthouse's simulated mobile test scored 100 in all four categories before the final refinements. Not tested on a real phone.
+**Measured:** 18 KB of compressed script before the film, 16 KB of it loaded only when the film runs. Clips stream as you approach them. Not yet tested on a real phone.
 
 ---
 

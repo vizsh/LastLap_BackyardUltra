@@ -41,6 +41,7 @@ The race happens inside a dense Mumbai residential township, not on a remote tra
 - Date, start time, season
 - Course route, surface and permissions
 - Entry cap, fee, prizes, organiser identity
-- Real media: none yet. The concept uses the user's reference photos from other events plus Pexels stock. The event photos must be replaced before public launch.
+- Real media: none yet. The site uses licensed Pexels imagery, which doesn't show LastLap. Replace it with the test-night shoot when ready.
+- Field size: limited, but no number has been set. Don't show one until it is confirmed.
 
 Never invent these for the site. Anything illustrative must be labelled as a placeholder.

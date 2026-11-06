@@ -11,17 +11,34 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:4321`. The race clock is at `/clock`.
+Open `http://localhost:4321`. The race clock is at `/clock`. `npm run build` writes a static site to `dist/`.
+
+## How the film works
+
+The page is one continuous film, not a stack of sections. Scroll position drives everything.
+
+| File | Job |
+|---|---|
+| `src/scripts/film/reel.js` | Every shot: pacing, camera, the light it enters and leaves through, and the sound mix. Edit here first |
+| `src/scripts/film/director.js` | Turns scroll position into a frame: camera, light, transitions |
+| `src/scripts/film/engine.js` | One WebGL2 pass: depth parallax, lens flare, route, fog, grain. Adapts resolution to the device |
+| `src/scripts/film/sound.js` | Live mix of real recordings, with footsteps paced by scroll speed |
+| `src/scripts/film/app.js` | The frame loop, words, race counters and start gate |
+| `src/scripts/main.js` | Everything that works without the film: clock, form, bib |
+
+**Every cut happens on a light.** Each shot names a light in its image. The camera flies into the outgoing light and out of the incoming one, and the two meet on screen under a lens flare.
+
+**Without the film.** Visitors with reduced motion, no WebGL2 or no JavaScript get a plain stacked page with the same words and images. Data-saver visitors get still frames instead of video.
+
+## Reservations
+
+The form saves nothing by default and tells visitors so. To connect a list, set this at build time:
 
 ```bash
-npm run build
+PUBLIC_LIST_ENDPOINT=https://your-endpoint.example/subscribe
 ```
 
-Static output goes to `dist/`.
-
-## Missing photos in a fresh clone
-
-Five placeholder photos are deliberately kept out of this public repository, because they show other organisers' events. Those sections appear on a dark background until replacements are added. See [CREDITS.md](CREDITS.md).
+The form sends `POST` with JSON `{ "email": "...", "name": "..." }`, and expects a 2xx response. Add a privacy note before collecting real details.
 
 ## Race clock
 
@@ -33,19 +50,19 @@ Five placeholder photos are deliberately kept out of this public repository, bec
 | R | Reset |
 | F | Full screen |
 
-## Email list
+## Rebuilding media
 
-The form saves nothing by default and tells visitors so. To connect a list, set this at build time:
+Sources aren't in this repository. These need Python with Pillow, NumPy, SciPy and onnxruntime, plus FFmpeg.
 
-```bash
-PUBLIC_LIST_ENDPOINT=https://your-endpoint.example/subscribe
-```
+| Tool | Makes |
+|---|---|
+| `tools/build_stills.py` | Graded stills and phone crops |
+| `tools/build_depth.py` | Depth maps for parallax |
+| `tools/build_route.py` | `route.png`, the route as a texture |
+| `tools/build_video.sh` | Seamlessly looping clips for desktop and phone |
+| `tools/build_audio.py` | Looping sound stems and footfalls |
 
-The form sends `POST` with JSON `{ "email": "..." }`, and expects a 2xx response. Add a privacy note before collecting real addresses.
-
-## Media tools
-
-`tools/media.py` grades photographs and `tools/mobile-crops.py` makes the phone crops. Both need Python with Pillow and NumPy.
+To swap in a new photo, change its source in `build_stills.py`, rebuild it and its depth map, then set its light position in `reel.js`.
 
 ## Project documents
 
@@ -55,4 +72,4 @@ The form sends `POST` with JSON `{ "email": "..." }`, and expects a 2xx response
 - [SHOOT-PLAN.md](SHOOT-PLAN.md): the one-evening night shoot
 - [CREDITS.md](CREDITS.md): media sources and licences
 
-Built with Astro, GSAP and Lenis.
+Built with Astro, WebGL2 and Lenis.

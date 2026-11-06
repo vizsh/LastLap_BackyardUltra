@@ -5,125 +5,189 @@ import '../styles/site.css';
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>LastLap. One more.</title>
-    <meta name="description" content="LastLap is a last-one-standing race in Thakur Village, Mumbai. 6.706 km every hour until one runner remains." />
+    <meta name="description" content="LastLap is a last-one-standing race in Thakur Village, Mumbai. 6.706 km every hour until one runner remains. By reservation." />
     <meta name="theme-color" content="#070304" />
     <meta property="og:title" content="LastLap. One more." />
-    <meta property="og:description" content="6.706 km every hour until one runner remains. Thakur Village, Mumbai." />
+    <meta property="og:description" content="6.706 km every hour until one runner remains. Thakur Village, Mumbai. By reservation." />
     <meta property="og:image" content="/media/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.png" />
-    <link rel="preload" as="image" href="/media/open.webp" media="(min-width: 761px)" />
-    <link rel="preload" as="image" href="/media/open-m.webp" media="(max-width: 760px)" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/anek-latin-latin-standard-normal.woff2" crossorigin />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, ok = false;
+        d.classList.add('js');
+        try { ok = !!document.createElement('canvas').getContext('webgl2'); } catch (e) {}
+        if (ok && !matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('film', 'locked');
+      })();
+    </script>
   </head>
   <body>
-    <a class="skip" href="#start-list">Skip to the details</a>
-    <div class="grain" aria-hidden="true"></div>
-    <div class="sweep" aria-hidden="true"></div>
-    <button class="sound" id="sound" type="button" aria-pressed="false">Sound off</button>
+    <a class="skip" href="#reserve">Skip to reservation</a>
+    <canvas id="film" role="img" aria-label="A continuous film of a night race: a runner in fog, a route through Mumbai, and the hours passing until one runner remains."></canvas>
 
-    <nav class="rail" aria-label="Race hours">
-      <span class="rail-line"></span>
-      <span class="rail-dot" id="railDot"></span>
-      <a href="#open" style="--y:0%" aria-label="00, Start">00</a>
-      <a href="#loop" style="--y:25%" aria-label="06, The loop">06</a>
-      <a href="#night" style="--y:50%" aria-label="12, The night">12</a>
-      <a href="#last" style="--y:75%" aria-label="18, Last light">18</a>
-      <a href="#start-list" style="--y:100%" aria-label="24, The start list">24</a>
+    <div class="gate film-only" id="gate">
+      <div class="gate-in">
+        <img src="/brand/lastlap-logo-small.webp" alt="LastLap" width="280" height="280" />
+        <p class="gate-pct" aria-hidden="true"><span id="gatePct">000</span></p>
+        <div class="gate-go">
+          <button id="enterSound" type="button">Start with sound</button>
+          <button id="enterQuiet" type="button">Start silent</button>
+        </div>
+      </div>
+    </div>
+
+    <header class="bar">
+      <a class="bar-logo" href="#start"><img src="/brand/lastlap-logo-small.webp" alt="LastLap" width="280" height="280" /></a>
+      <div class="bar-right">
+        <button class="sound film-only" id="sound" type="button" aria-pressed="false"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><span>Sound</span></button>
+        <a class="bar-cta" href="#reserve">Reserve</a>
+      </div>
+    </header>
+
+    <nav class="rail film-only" aria-label="Chapters">
+      <span class="rail-line"><span id="railFill"></span></span>
+      <a href="#start"><span>Start</span></a>
+      <a href="#loop"><span>The loop</span></a>
+      <a href="#night"><span>The night</span></a>
+      <a href="#last"><span>Last light</span></a>
+      <a href="#reserve"><span>Reserve</span></a>
     </nav>
 
+    <div class="hud film-only" id="hud" aria-hidden="true">
+      <svg viewBox="396 270 790 620"><path id="hudPath" /><circle id="hudDot" r="30" /></svg>
+      <dl>
+        <div><dt>LOOP</dt><dd id="hudLoop">01</dd></div>
+        <div><dt>KM</dt><dd><span id="hudKm">000</span><i class="pt"></i><span id="hudKmD">0</span></dd></div>
+        <div><dt>TIME</dt><dd><span id="hudH">00</span><i class="colon"></i><span id="hudM">00</span><i class="colon"></i><span id="hudS">00</span></dd></div>
+      </dl>
+    </div>
+
     <main>
-      <section id="open" class="chapter open">
-        <div class="pin">
-          <picture><source media="(max-width: 760px)" srcset="/media/open-m.webp" /><img class="full push" src="/media/open.webp" alt="Runners in headlamps lined up under an arch in heavy rain at night" width="2000" height="1334" fetchpriority="high" /></picture>
-          <div class="shade"></div>
-          <div class="veil"></div>
-          <header class="hero">
-            <img class="logo" src="/brand/lastlap-logo-small.webp" alt="LastLap" width="280" height="280" />
-            <div class="hero-copy">
-              <p class="hi" lang="hi">एक और</p>
-              <h1>One more.</h1>
-              <a class="act" href="#start-list">Put your name down</a>
+      <div class="reel" id="reel">
+        <div class="stage" id="stage">
+          <section class="beat beat-open" data-shot="open" id="start">
+            <picture><source media="(max-width: 760px)" srcset="/media/open-m.webp" width="1080" height="1919" /><img src="/media/open.webp" alt="A figure in a glowing red headlamp standing alone in blue fog" width="2560" height="1507" loading="lazy" /></picture>
+            <div class="copy" data-first>
+              <p class="hi" lang="hi"><span class="ln"><span>एक और</span></span></p>
+              <h1 class="mega"><span class="ln"><span>One more.</span></span></h1>
+              <p class="sub"><span class="ln"><span>6.706 km. Every hour. Until one runner remains.</span></span></p>
             </div>
-          </header>
-          <div class="clock" role="group" aria-label="Time to the next hourly start">
-            <span class="clock-label">NEXT START</span>
-            <span class="clock-time"><span id="clockM">00</span><i class="colon"></i><span id="clockS">00</span></span>
-          </div>
-        </div>
-      </section>
+            <div class="next" id="next" role="group" aria-label="Time to the next hourly start">
+              <span class="label">NEXT START</span>
+              <span class="led"><span id="clockM">00</span><i class="colon"></i><span id="clockS">00</span></span>
+            </div>
+            <p class="cue film-only" id="cue" aria-hidden="true"><i></i>Scroll</p>
+          </section>
 
-      <section id="loop" class="chapter loop">
-        <div class="pin">
-          <div class="plate" id="plate">
-            <img src="/media/plate.webp" alt="Aerial view of Mumbai residential towers and a lit road at night" width="1600" height="914" />
-            <canvas id="route" aria-hidden="true"></canvas>
-          </div>
-          <picture><source media="(max-width: 760px)" srcset="/media/exposure-m.webp" /><img class="full" id="exposure" src="/media/exposure.webp" alt="Long exposure photograph of vehicle lights circling a roundabout at night" width="2000" height="1200" loading="lazy" /></picture>
-          <div class="shade low"></div>
-          <div class="line" data-from="0.06" data-to="0.33"><p class="big">6.706 km.<br />One hour.</p></div>
-          <div class="line" data-from="0.35" data-to="0.53"><p class="big">8:57 per km.<br />Sounds easy.</p></div>
-          <div class="line" data-from="0.55" data-to="0.72"><p class="big">Back before the bell.<br />Or you're out.</p></div>
-          <div class="line" data-from="0.78" data-to="1.1"><p class="big">Again.<br />24 loops. 100 miles.</p></div>
-          <div class="km" data-from="0.08" data-to="0.76" aria-hidden="true">
-            <span class="clock-label">KM</span><span class="clock-time" id="km">0.00</span>
-          </div>
-          <p class="route-note" data-from="0.02" data-to="0.76">Illustrative route, not the course</p>
-        </div>
-      </section>
+          <section class="beat" data-shot="loop" id="loop">
+            <picture><source media="(max-width: 760px)" srcset="/media/plate-m.webp" /><img src="/media/plate-route.webp" alt="Aerial view of Mumbai residential towers at night with a string of headlamps along the road" width="1920" height="1097" loading="lazy" /></picture>
+            <div class="copy" data-a="0.05" data-b="0.32"><p class="big"><span class="ln"><span>6.706 km.</span></span><span class="ln"><span>One hour.</span></span></p></div>
+            <div class="copy" data-a="0.36" data-b="0.62"><p class="big"><span class="ln"><span>8:57 per km.</span></span><span class="ln"><span>Sounds easy.</span></span></p></div>
+            <div class="copy" data-a="0.66" data-b="0.96"><p class="big"><span class="ln"><span>Back before the bell.</span></span><span class="ln"><span>Or you're out.</span></span></p></div>
+            <p class="route-note" id="routeNote">Illustrative route, not the course</p>
+          </section>
 
-      <section id="night" class="chapter night">
-        <div class="pin">
-          <p class="hour" id="hour" aria-hidden="true" hidden>HOUR <span id="hourN">01</span></p>
-          <figure class="shot" data-from="-0.1" data-to="0.17"><picture><source media="(max-width: 760px)" srcset="/media/tents-m.webp" /><img src="/media/tents.webp" alt="Crew tents strung with bulbs at dusk" width="2000" height="1500" loading="lazy" /></picture><figcaption><b>HOUR 01</b>Everyone is still smiling.</figcaption></figure>
-          <figure class="shot" data-from="0.17" data-to="0.34"><video muted loop playsinline preload="none" poster="/media/run-group.webp" data-src="/media/run-group.mp4"></video><figcaption><b>HOUR 06</b>The city goes to sleep.</figcaption></figure>
-          <figure class="shot" data-from="0.34" data-to="0.5"><video muted loop playsinline preload="none" poster="/media/train.webp" data-src="/media/train.mp4"></video><figcaption><b>HOUR 11</b>The last local leaves.</figcaption></figure>
-          <figure class="shot" data-from="0.5" data-to="0.66"><video muted loop playsinline preload="none" poster="/media/run-track.webp" data-src="/media/run-track.mp4"></video><figcaption><b>HOUR 15</b>No one is watching.</figcaption></figure>
-          <figure class="shot" data-from="0.66" data-to="0.83"><img src="/media/dawn.webp" alt="Mumbai towers at first light" width="1280" height="720" loading="lazy" /><figcaption><b>HOUR 24</b>Sunrise. Still running.</figcaption></figure>
-          <figure class="shot" data-from="0.83" data-to="1.1"><picture><source media="(max-width: 760px)" srcset="/media/clock-m.webp" /><img src="/media/clock.webp" alt="Runners leaving under an arch at night beside a red race clock" width="1800" height="1200" loading="lazy" /></picture><figcaption><b>HOUR 46</b>There is no finish.</figcaption></figure>
-        </div>
-      </section>
+          <section class="beat" data-shot="again">
+            <picture><source media="(max-width: 760px)" srcset="/media/again-m.webp" /><img src="/media/again.webp" alt="Long exposure of red traffic trails passing Chhatrapati Shivaji Terminus in Mumbai at night" width="2560" height="1775" loading="lazy" /></picture>
+            <div class="copy"><p class="mega"><span class="ln"><span>Again.</span></span></p></div>
+          </section>
 
-      <section id="last" class="chapter last">
-        <div class="pin">
-          <picture><source media="(max-width: 760px)" srcset="/media/last-m.webp" /><img class="full" id="lastImg" src="/media/last.webp" alt="One runner in a headlamp crossing an empty field under a string-lit arch" width="1600" height="2062" loading="lazy" /></picture>
-          <div class="shade low"></div>
-          <p class="big last-line">Last one standing.</p>
-        </div>
-      </section>
+          <section class="beat" data-shot="field" id="night">
+            <picture><source media="(max-width: 760px)" srcset="/media/field-m.webp" /><img src="/media/field.webp" alt="Aerial view of a river of runners on a tree-lined road at night" width="2560" height="1629" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 01</span></span></p><p class="big"><span class="ln"><span>Everyone still believes.</span></span></p></div>
+          </section>
 
-      <section id="one-more" class="one-more">
-        <picture><source media="(max-width: 760px)" srcset="/media/flares-m.webp" /><img class="full" src="/media/flares.webp" alt="" width="2000" height="882" loading="lazy" /></picture>
-        <div class="one-more-copy">
-          <p class="colossal" lang="hi">एक और</p>
-          <p class="under">Every hour, on the hour, until one is left.</p>
-        </div>
-      </section>
+          <section class="beat" data-shot="run">
+            <picture><source media="(max-width: 760px)" srcset="/media/run-m.webp" /><img src="/media/run.webp" alt="Three runners seen from behind on a wet waterfront path at night" width="1920" height="1080" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 03</span></span></p><p class="big"><span class="ln"><span>Still easy. Still talking.</span></span></p></div>
+          </section>
 
-      <section id="start-list" class="start-list">
-        <img class="logo-big" src="/brand/lastlap-logo-alpha.webp" alt="" width="1080" height="1080" loading="lazy" />
-        <div class="facts-wrap">
-          <h2>Put your name down.</h2>
-          <dl class="facts">
-            <div><dt>Format</dt><dd>6.706 km every hour until one runner remains</dd></div>
-            <div><dt>Where</dt><dd>Thakur Village, Mumbai</dd></div>
-            <div><dt>When</dt><dd>To be announced</dd></div>
-            <div><dt>Entry</dt><dd>Opens soon</dd></div>
-          </dl>
+          <section class="beat" data-shot="shore">
+            <picture><source media="(max-width: 760px)" srcset="/media/shore-m.webp" /><img src="/media/shore.webp" alt="Silhouettes of runners crossing in front of a lit city across the water" width="1920" height="1080" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 06</span></span></p><p class="big"><span class="ln"><span>The city goes to sleep.</span></span></p></div>
+          </section>
+
+          <section class="beat" data-shot="train">
+            <picture><source media="(max-width: 760px)" srcset="/media/train-m.webp" /><img src="/media/train.webp" alt="A train streaking past a red-lit platform at night under a red LED clock, with one person waiting" width="2560" height="1552" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 11</span></span></p><p class="big"><span class="ln"><span>The last local leaves.</span></span></p></div>
+          </section>
+
+          <section class="beat" data-shot="lone">
+            <picture><source media="(max-width: 760px)" srcset="/media/lone-m.webp" /><img src="/media/lone.webp" alt="A lone runner in silhouette against a lit colonnade, reflected in wet ground" width="2560" height="1613" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 15</span></span></p><p class="big"><span class="ln"><span>No one is watching.</span></span></p></div>
+          </section>
+
+          <section class="beat" data-shot="dawn">
+            <picture><source media="(max-width: 760px)" srcset="/media/dawn-m.webp" /><img src="/media/dawn.webp" alt="Mumbai towers at first light" width="1920" height="1080" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 24</span></span></p><p class="big"><span class="ln"><span>100 miles. Still running.</span></span></p></div>
+          </section>
+
+          <section class="beat" data-shot="rain">
+            <picture><source media="(max-width: 760px)" srcset="/media/rain-m.webp" /><img src="/media/rain.webp" alt="Rain falling through a single streetlight in the dark" width="1920" height="1080" loading="lazy" /></picture>
+            <div class="bigclock film-only" id="bigClock" aria-hidden="true"><svg id="bigDigits" viewBox="0 0 802 170"></svg></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 46</span></span></p><p class="big"><span class="ln"><span>There is no finish.</span></span></p></div>
+          </section>
+
+          <section class="beat" data-shot="last" id="last">
+            <picture><source media="(max-width: 760px)" srcset="/media/last-m.webp" /><img src="/media/last.webp" alt="One runner in silhouette in a backlit lane, casting a long shadow" width="2560" height="1632" loading="lazy" /></picture>
+            <div class="copy"><p class="mega"><span class="ln"><span>Last one</span></span><span class="ln"><span>standing.</span></span></p></div>
+          </section>
+
+          <section class="beat" data-shot="flares">
+            <picture><source media="(max-width: 760px)" srcset="/media/flares-m.webp" /><img src="/media/flares.webp" alt="" width="2560" height="1434" loading="lazy" /></picture>
+            <div class="copy copy-mid" data-final>
+              <p class="colossal" lang="hi"><span class="ln"><span>एक और</span></span></p>
+              <p class="sub"><span class="ln"><span>Every hour, on the hour, until one is left.</span></span></p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section class="reserve" id="reserve">
+        <div class="reserve-copy">
+          <h2 class="reveal"><span class="ln"><span>By reservation</span></span><span class="ln"><span>only.</span></span></h2>
+          <p class="lede reveal"><span class="ln"><span>One start line. No finish line. A limited field, and it closes when it's full.</span></span></p>
+
           <form id="list" novalidate>
-            <label for="email">Email</label>
-            <div class="field">
-              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="listMsg" />
-              <button type="submit">Add me</button>
+            <div class="row">
+              <div class="field"><label for="name">Name on your bib</label><input id="name" name="name" type="text" autocomplete="name" maxlength="22" placeholder="Your name" /></div>
+              <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="listMsg" /></div>
             </div>
+            <button class="reserve-btn" type="submit"><span>Reserve my place</span></button>
             <p id="listMsg" class="msg" role="status"></p>
+            <p class="fine">Reserving registers your interest ahead of entry. It isn't an entry or a payment.</p>
           </form>
         </div>
-        <footer>
-          <p>LastLap is an independent event, not affiliated with any other race or series. Concept preview: photographs are placeholders and show other events and places.</p>
-        </footer>
+
+        <div class="bib-stage" id="bibStage" aria-hidden="true">
+          <div class="bib" id="bib">
+            <i class="hole h1"></i><i class="hole h2"></i><i class="hole h3"></i><i class="hole h4"></i>
+            <div class="bib-top">
+              <img src="/brand/lastlap-logo-alpha.webp" alt="" width="1080" height="1080" loading="lazy" />
+              <div class="bib-meta"><b>THAKUR VILLAGE</b><span>MUMBAI</span></div>
+            </div>
+            <p class="bib-name" id="bibName">YOUR NAME</p>
+            <div class="bib-foot"><span>RESERVED</span><span>6.706 KM / EVERY HOUR</span></div>
+            <div class="bib-stub"><span>ADMIT ONE RUNNER</span><b>NO FINISH LINE</b></div>
+            <i class="bib-lamp"></i>
+          </div>
+        </div>
+
+        <dl class="facts">
+          <div><dt>Format</dt><dd>6.706 km every hour until one runner remains</dd></div>
+          <div><dt>Where</dt><dd>Thakur Village, Mumbai</dd></div>
+          <div><dt>When</dt><dd>To be announced</dd></div>
+          <div><dt>Places</dt><dd>Limited, by reservation</dd></div>
+        </dl>
       </section>
     </main>
+
+    <footer class="foot">
+      <p>LastLap is an independent event, not affiliated with any other race or series. Concept preview: imagery is licensed stock and doesn't show LastLap, and the route is illustrative.</p>
+    </footer>
     <script src="../scripts/main.js"></script>
   </body>
 </html>

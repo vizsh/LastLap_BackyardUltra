@@ -1,13 +1,13 @@
 # LastLap design system
 
-The site should feel like photographs of a real race at night. If something looks generated, it's wrong.
+The site should feel like a film about a real race at night. If something looks generated, it's wrong.
 
 ## Principles
 
-- **Real media leads.** Photographs and footage carry the page. Code supports them.
-- **One idea per screen, one line of copy.** About 120 words tell the whole story.
-- **Every light has a source.** No decorative glow.
-- **Red means still running.** Don't use it for decoration.
+- **Real media leads.** Photographs and footage carry the page. Code only moves the camera and the light.
+- **One film, no sections.** Nothing swaps or jumps. The picture is always moving, even when scrolling stops.
+- **Every cut happens on a light.** The light is what carries you from shot to shot.
+- **One idea per screen, one line of copy.**
 - **Darkness is the luxury.** Leave it empty.
 
 ## Colour
@@ -15,12 +15,12 @@ The site should feel like photographs of a real race at night. If something look
 | Token | Value | Use |
 |---|---|---|
 | `--ink` | `#070304` | Main ground, warm black |
-| `--flare` | `#FF3B2B` | Actions, hours, route |
-| `--ember` | `#90272A` | Scrollbar and fading red |
+| `--flare` | `#FF3B2B` | Actions, hours, counters |
+| `--ember` | `#90272A` | Scrollbar |
 | `--headlamp` | `#F1F3F5` | Text |
 | `--dusk` | `#A9B6C9` | Secondary text |
 
-Text pairings pass WCAG AA on ink.
+Photographs keep their natural night colour. Red comes from what's in the scene, not from a filter.
 
 ## Type
 
@@ -29,37 +29,42 @@ Text pairings pass WCAG AA on ink.
 | Display | Anek Latin | Weight 800, width 78%, tight leading |
 | Hindi | Anek Devanagari | Subset to the glyphs in use |
 | Body | Anek Latin | 1.0625rem |
-| Data | Doto 900 | Clock, distance, hour counter |
+| Data | Doto 900 | Clock and counters. Draw `:` and `.` with the `.colon` and `.pt` elements, because Doto's own marks fail at small sizes |
 
 If new Hindi words are added, rebuild the subset font, or they will fall back to a system font.
 
-## Photo grade
+## Choosing imagery
 
-`tools/media.py` holds the grade.
-
-- Shadows go to ink, mids to red, and highlights stay white. Headlamps must never turn pink
-- The aerial plate is drained of colour, so the route is the only strong red
-- Dawn stays blue. It's the one moment without red
-- Bottom third stays quiet for words, top left stays clear for the logo
-- Phones get their own portrait crops from `tools/mobile-crops.py`
+- Dark, sharp, and with a clear light source that a cut can happen on
+- Favour silhouettes, backs and distant figures. Pexels doesn't allow implying endorsement
+- No visible sponsors, brands or event names
+- Quiet bottom third for words, clear top left for the logo
+- Check it at full size on a phone crop before accepting it. Soft footage is not acceptable
+- Use 4K sources for video where possible, and judge frames at 1:1
 
 ## Motion
 
-- Scroll drives almost everything. One easing family, slightly slower than feels safe
-- Text fades with a small rise. Shots dip through black
-- Animate only opacity and transform. No filters on large areas
-- Respect reduced motion: no pinning, no scrubbing, everything stacked and readable
-- The bell is off until a visitor turns it on
+- Scroll drives the film. Camera drift and handheld sway keep it alive when scrolling stops
+- Transitions are a lens catching a light, never a flash. The picture stays readable through the flare
+- Words rise out of masks as the light recedes, and leave as it swells
+- Only transform and opacity on page elements. Heavy visual work belongs in the shader
+- Reduced motion gets a plain stacked page
+
+## Sound
+
+- Off until the visitor chooses it
+- Real recordings only. Beds follow the shot, and the filter closes as the lens flares
+- Footsteps follow scroll speed
 
 ## Layout
 
-- No navigation bar. The 00 to 24 hour rail is the progress bar and the menu
-- No cards, stat rows, FAQ or galleries on the main page
-- Four facts and one email field are the whole information area
+- No navigation bar beyond the logo, Sound and Reserve
+- One persistent race readout: loop, kilometres and time
+- No cards, stat rows, FAQ or galleries
 
 ## Rules for content
 
-- Never invent a date, price, route, result, testimonial or sponsor
+- Never invent a date, price, route, result, testimonial, sponsor or field size
 - Anything unconfirmed stays labelled: "Illustrative route", "To be announced"
-- Staged photographs must be labelled as staged. No LastLap race has taken place yet
+- Stock or staged images must not be presented as a past LastLap race
 - Don't claim affiliation with any other race or series
