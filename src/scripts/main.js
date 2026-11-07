@@ -115,6 +115,19 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
   new IntersectionObserver(([x]) => { live = x.isIntersecting; if (live) requestAnimationFrame(drift); }).observe(entry);
 }
 
+/* The opening choice has to answer at once. On a slow phone the film's code can take a few
+   seconds to arrive, so Register now and the sound switch work without it, and the film picks
+   up from wherever the visitor is when it does arrive. */
+const gateSound = $('#gateSound');
+gateSound.addEventListener('click', () => gateSound.setAttribute('aria-pressed', String(gateSound.getAttribute('aria-pressed') !== 'true')));
+$('#enterRegister').addEventListener('click', () => {
+  if (root.dataset.film === 'on') return;
+  root.dataset.entered = 'register';
+  root.classList.remove('locked');
+  $('#gate').classList.add('gone');
+  $('#register').scrollIntoView();
+});
+
 /* the film only loads for those who can and want to see it, and steps aside if it can't run */
 if (root.classList.contains('film')) {
   const giveUp = (err) => {

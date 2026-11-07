@@ -25,6 +25,8 @@ export async function startFilm(fail = () => {}) {
   const samples = sampleRoute();
 
   const canvas = $('#film'), reel = $('#reel'), stage = $('#stage'), register = $('#register');
+  /* if they chose Register before this code arrived, keep them where they are in the form */
+  const early = root.dataset.entered === 'register' ? scrollY - register.offsetTop : null;
   reel.style.height = `${(total + 1) * 100}lvh`;
 
   const film = new Film(canvas, { phone, onLost: () => location.reload() });
@@ -164,9 +166,10 @@ export async function startFilm(fail = () => {}) {
     if (withSound) toggleSound(true).then(() => sound.bell(0.9));
     if (!toRegister) { loadFilm(false); return; }
     /* the page was locked to one screen, so the smooth scroller has to measure it again first */
-    scrollTo(0, registerTop);
+    const there = registerTop + (early ?? 0);
+    scrollTo(0, there);
     lenis?.resize();
-    lenis?.scrollTo(registerTop, { immediate: true, force: true });
+    lenis?.scrollTo(there, { immediate: true, force: true });
   }
   const soundBtn = $('#sound');
   async function toggleSound(on) {
@@ -179,9 +182,9 @@ export async function startFilm(fail = () => {}) {
     if (on && !sound.once.bell) sound.ready?.then(() => sound.bell(0.5)); else if (on) sound.bell(0.5);
   });
   const wantsSound = () => gateSound.getAttribute('aria-pressed') === 'true';
-  gateSound.addEventListener('click', () => gateSound.setAttribute('aria-pressed', String(!wantsSound())));
   enterIntro.addEventListener('click', () => enter(wantsSound(), false));
   $('#enterRegister').addEventListener('click', () => enter(wantsSound(), true));
+  root.dataset.film = 'on';
 
   /* jumping around: chapters are places on the film, not on the page */
   const target = (hash) => {
@@ -208,7 +211,7 @@ export async function startFilm(fail = () => {}) {
     sizeFilm(); measure();
   });
 
-  if (location.hash === '#register') requestAnimationFrame(() => enter(false, true));
+  if (location.hash === '#register' || root.dataset.entered === 'register') requestAnimationFrame(() => enter(false, true));
 
   /* the frame */
   let pos = 0, prev = 0, vel = 0, then = performance.now(), gateReady = false, shownPct = 0, sceneNow = 'open', closed = true, lastT = 0, hudOn = -1;
