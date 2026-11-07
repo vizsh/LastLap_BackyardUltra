@@ -48,7 +48,7 @@ The form posts to `/api/register`, a Vercel function in `api/`. Until a database
 2. Optionally set `FIELD_CAP`, the number of places. With a cap, the page shows how many are taken, the form turns invite-only at `INVITE_ONLY_AT` (85% of the cap unless set), and everyone else joins a waitlist in order.
 3. Redeploy.
 
-Each runner gets the next bib number and two one-use invite codes. An invite link is `/?invite=CODE#register`. A repeat registration confirms the place but never shows the invites again, because anyone can type anyone's email. Add a privacy note before collecting real details. `PUBLIC_LIST_ENDPOINT` still overrides the endpoint at build time.
+Bibs 1 and 2 are held back for the organisers and count as places taken, so the first public runner gets bib 3 (`RESERVED_BIBS` changes this). Each runner gets the next bib number and two one-use invite codes. An invite link is `/?invite=CODE#register`. A repeat registration confirms the place but never shows the invites again, because anyone can type anyone's email. Set `ADMIN_TOKEN` to a long secret of your own, then open `/api/list?token=YOUR_TOKEN` to download the whole list as a spreadsheet, in sign-up order. `PUBLIC_LIST_ENDPOINT` still overrides the endpoint at build time.
 
 ### Race day
 

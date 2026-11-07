@@ -7,20 +7,30 @@
    If FIELD_CAP is set, the field closes to the public at INVITE_ONLY_AT places (85% of the cap
    unless set), after which only an unused invite code gets a place. Everyone else, and everyone
    after the cap, joins the waitlist in order. Without FIELD_CAP there is no limit and no
-   waitlist. Without a database this answers 503 and the site says nothing was saved. */
+   waitlist. Without a database this answers 503 and the site says nothing was saved.
+
+   Bibs 1 and 2 are held back for the organisers (RESERVED_BIBS changes that). They count as
+   places taken, and the public numbering starts at 3. */
 import { ready, redis, send, readBody } from './_store.js';
 
 const CAP = parseInt(process.env.FIELD_CAP || '0', 10) || 0;
 const OPEN_UNTIL = CAP ? Math.min(CAP, parseInt(process.env.INVITE_ONLY_AT || '0', 10) || Math.floor(CAP * 0.85)) : 0;
 const K = (s) => `lastlap:${s}`;
+const RESERVED = (process.env.RESERVED_BIBS ?? '1,2').split(',').map((n) => parseInt(n, 10)).filter((n) => n > 0);
+/* places taken: every bib handed out, plus held bibs the count hasn't reached yet */
+const takenFrom = (count) => count + RESERVED.filter((n) => n > count).length;
 
 /* claims the email, then a bib or a waitlist place, in one step so two runners never share a number */
 const CLAIM = `
 local existing = redis.call('GET', KEYS[1])
 if existing then return {'exists', existing} end
 redis.call('SET', KEYS[1], 'pending')
-local taken = tonumber(redis.call('GET', KEYS[2]) or '0')
+local count = tonumber(redis.call('GET', KEYS[2]) or '0')
 local cap, openUntil = tonumber(ARGV[1]), tonumber(ARGV[2])
+local held = {}
+for n in string.gmatch(ARGV[3], '%d+') do held[tonumber(n)] = true end
+local taken = count
+for n, _ in pairs(held) do if n > count then taken = taken + 1 end end
 local status = 'listed'
 if cap > 0 then
   if taken >= cap then status = 'waitlist'
@@ -29,7 +39,11 @@ if cap > 0 then
     if owner and owner ~= 'used' then redis.call('SET', KEYS[3], 'used') else status = 'waitlist' end
   end
 end
-if status == 'listed' then return {'listed', tostring(redis.call('INCR', KEYS[2]))} end
+if status == 'listed' then
+  local bib = redis.call('INCR', KEYS[2])
+  while held[bib] do bib = redis.call('INCR', KEYS[2]) end
+  return {'listed', tostring(bib)}
+end
 return {'waitlist', tostring(redis.call('INCR', KEYS[4]))}
 `;
 
@@ -37,7 +51,7 @@ const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const code = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => ALPHABET[b % ALPHABET.length]).join('');
 
 async function state() {
-  const taken = parseInt((await redis('GET', K('bibs'))) || '0', 10);
+  const taken = takenFrom(parseInt((await redis('GET', K('bibs'))) || '0', 10));
   const s = !CAP ? 'open' : taken >= CAP ? 'full' : taken >= OPEN_UNTIL ? 'invite' : 'open';
   return CAP ? { state: s, taken, cap: CAP } : { state: s };
 }
@@ -58,7 +72,7 @@ export default async function handler(req, res) {
     const dare = Math.max(0, Math.min(24, parseInt(b.dare, 10) || 0));
     const invite = String(b.invite || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
 
-    const [kind, value] = await redis('EVAL', CLAIM, '4', K(`runner:${email}`), K('bibs'), K(`invite:${invite || '-'}`), K('waitlist'), String(CAP), String(OPEN_UNTIL));
+    const [kind, value] = await redis('EVAL', CLAIM, '4', K(`runner:${email}`), K('bibs'), K(`invite:${invite || '-'}`), K('waitlist'), String(CAP), String(OPEN_UNTIL), RESERVED.join(','));
     if (kind === 'exists') {
       if (value === 'pending') return send(res, 409, { error: 'busy' });
       /* anyone can type anyone's email, so a repeat confirms the place but never hands out the invites */

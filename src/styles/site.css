@@ -172,6 +172,7 @@ input:focus { outline: none; border-bottom-color: var(--flare); }
 .msg.err { color: #ff8f85; }
 .field-state { grid-column: 1 / -1; font-size: .9375rem; color: var(--dusk); }
 .field-state b { font: 900 1.05rem/1 'Doto', monospace; color: var(--flare); letter-spacing: .06em; }
+.fine { grid-column: 1 / -1; max-width: 70ch; font-size: .8125rem; color: var(--dusk); }
 .keep { grid-column: 1 / -1; justify-self: start; margin-top: 2px; padding: 8px 0 6px; font-size: 1.0625rem; font-weight: 500; border-bottom: 1px solid var(--flare); transition: color .25s; }
 .keep:hover { color: var(--flare); }
 .keep:disabled { opacity: .6; cursor: progress; }
