@@ -36,15 +36,23 @@ The page is one continuous film, not a stack of sections. Scroll position drives
 
 ## Registration
 
-The section is a poster: the visitor's name stands in the sky of the Last light photograph, behind the runner, as they type it. Before they type, it reads "Not for everyone."
+The section is a poster: the visitor's name stands in the sky of the Last light photograph, behind the runner, as they type it. Before they type, it reads "Not for everyone." **Save my poster** draws a 1080 x 1920 story of it on the visitor's own device: their name behind the runner, their bib and their dare. Phones open the share sheet, and computers download the file.
 
-The form saves nothing by default and tells visitors so. To connect a list, set this at build time:
+**Prove it** asks for the visitor's biggest running achievement and answers back, rude first and honest second, then dares them to a number of loops a little past it. The rules and every line are in `src/scripts/dare.js`. Accepting the dare puts it on the poster and sends it with the registration.
 
-```bash
-PUBLIC_LIST_ENDPOINT=https://your-endpoint.example/subscribe
-```
+### Switching the list on
 
-The form sends `POST` with JSON `{ "email": "...", "name": "..." }`, and expects a 2xx response. Add a privacy note before collecting real details.
+The form posts to `/api/register`, a Vercel function in `api/`. Until a database is connected it answers 503, and the site says nothing was saved. To turn it on:
+
+1. In the Vercel project, add an Upstash Redis database from the Marketplace (free tier). It sets `KV_REST_API_URL` and `KV_REST_API_TOKEN` (or set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`).
+2. Optionally set `FIELD_CAP`, the number of places. With a cap, the page shows how many are taken, the form turns invite-only at `INVITE_ONLY_AT` (85% of the cap unless set), and everyone else joins a waitlist in order.
+3. Redeploy.
+
+Each runner gets the next bib number and two one-use invite codes. An invite link is `/?invite=CODE#register`. A repeat registration confirms the place but never shows the invites again, because anyone can type anyone's email. Add a privacy note before collecting real details. `PUBLIC_LIST_ENDPOINT` still overrides the endpoint at build time.
+
+### Race day
+
+From half an hour before `START`, the site asks `/api/live` for the field every 20 seconds. Keep a Google Sheet with columns `name`, `bib` and `out` (the loop a runner failed, blank while running), publish it to the web as CSV, and set its link as `LIVE_SHEET_CSV` in Vercel. Set `RACE_START` there too when the start time is decided. The opening then shows the real loop and how many are left, registration closes, and the field appears with names greying out as runners drop. Add `?live=demo` to any page address to preview it with numbered stand-in runners.
 
 ## Race clock
 

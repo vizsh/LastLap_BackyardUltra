@@ -361,6 +361,10 @@ Your brief is hype first and concept only, so the first target is a working slic
 - Sound from real recordings: live mix per shot, footsteps paced by scroll speed, a bell when the loop closes
 - Registration as a poster: the visitor's name stands in the sky behind the runner as they type it
 - Contact us for more info, with both organisers' numbers
+- Save my poster: a phone story of the visitor's name behind the runner, with their bib and dare
+- Bib numbers in sign-up order, two invite codes each, invite-only and waitlist once a cap is set. Built, but off until a database is connected
+- Prove it: the race answers a runner's biggest achievement and dares them to a number of loops
+- Race day: live loop, runners left and a field that greys out, fed from a published Google Sheet
 - Plain stacked page for reduced motion, no WebGL and no JavaScript
 - Race clock prop at `/clock`
 

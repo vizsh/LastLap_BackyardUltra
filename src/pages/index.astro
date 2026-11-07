@@ -78,6 +78,10 @@ import Countdown from '../components/Countdown.astro';
               <p class="sub"><span class="ln"><span>6.706 km. Every hour. For up to 24 hours.</span></span></p>
             </div>
             <Countdown class="next" id="next" />
+            <div class="live-now" id="liveNow" role="status" aria-label="Race day, live">
+              <p class="live-tag"><i aria-hidden="true"></i>LIVE</p>
+              <p class="live-read"><span>LOOP <b id="liveLoop">00</b></span><span><b id="liveLeft">0</b> OF <b id="liveTotal">0</b> STILL RUNNING</span></p>
+            </div>
             <p class="cue film-only" id="cue" aria-hidden="true"><i></i>Scroll</p>
           </section>
 
@@ -166,11 +170,46 @@ import Countdown from '../components/Countdown.astro';
             <form id="list" novalidate>
               <div class="field"><label for="name">Name on your bib</label><input id="name" name="name" type="text" autocomplete="name" maxlength="22" placeholder="Your name" /></div>
               <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="listMsg" /></div>
+              <div class="field" id="inviteField" hidden><label for="invite">Invite code</label><input id="invite" name="invite" type="text" autocomplete="off" autocapitalize="characters" maxlength="8" placeholder="From a runner" /></div>
+              <input class="hp" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <button class="go" type="submit">Put my name down</button>
               <p id="listMsg" class="msg" role="status"></p>
+              <p class="field-state" id="fieldState" hidden></p>
+              <button class="keep" id="savePoster" type="button" hidden>Save my poster</button>
             </form>
+            <div class="done" id="done" hidden>
+              <p class="done-bib"><span id="doneLabel">YOU'RE IN</span><b id="doneBib">BIB 000</b></p>
+              <p class="done-line" id="doneLine"></p>
+              <div class="invites" id="invites" hidden>
+                <p>Two invites. Give them to people crazy enough.</p>
+                <ul id="inviteList"></ul>
+              </div>
+              <div class="done-act"><button class="go" id="donePoster" type="button">Save my poster</button><a class="act" href="#prove">Now prove it</a></div>
+            </div>
+            <p class="closed">Registration is closed. The race is on.</p>
           </div>
         </div>
+
+        <section class="prove" id="prove">
+          <h2 class="prove-q reveal"><span class="ln"><span>Prove it.</span></span></h2>
+          <form class="prove-form" id="proveForm" novalidate>
+            <label for="feat">Your biggest running achievement</label>
+            <div class="prove-row"><input id="feat" name="feat" type="text" maxlength="140" autocomplete="off" placeholder="A 10K in 52 minutes. A marathon. Nothing yet." /><button class="go" type="submit">Judge me</button></div>
+          </form>
+          <div class="verdict" id="verdict" aria-live="polite" hidden>
+            <p class="jab" id="jab"></p>
+            <p class="truth" id="truth"></p>
+            <p class="dare-line"><span>I dare you to finish</span><b id="dareN">1</b><span id="dareUnit">loops.</span></p>
+            <p class="dare-math" id="dareMath"></p>
+            <div class="dare-act"><button class="go" id="takeDare" type="button">Accept the dare</button><button class="act" id="againDare" type="button">Try something else</button></div>
+          </div>
+        </section>
+
+        <section class="field-live" id="field" aria-labelledby="fieldTitle">
+          <h2 id="fieldTitle">The field</h2>
+          <p class="field-line" id="fieldLine"></p>
+          <ol class="field-list" id="fieldList"></ol>
+        </section>
 
         <div class="after">
           <dl class="facts">

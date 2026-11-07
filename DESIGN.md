@@ -68,6 +68,10 @@ If new Hindi words are added, rebuild the subset font, or they will fall back to
 - **Again** is a lap sheet. Each loop adds a row with a hairline and its loop number, pushes the last row up, and is heavier and narrower than the one before: weight 300 at width 116%, then 500 at 96%, then 800 at 76%. The camera steps closer on each bell
 - **The registration poster** stands words in the sky of the Last light photograph, between the photograph and a cut-out of its own runner and land. The invitation stops short of the runner so it can be read whole. A typed name fills the sky and runs behind them. The two photographic layers never move apart, or the runner shows a double edge
 
+- **After the name goes down**, the bib number is the hero, in LED type. The two invites sit under it like tickets, and the poster is the main action
+- **Prove it** answers in two voices: a jab in display type, then the honest line in quiet secondary text. The dare is a giant LED number that counts up one bell at a time. The jabs can be rude but never cruel, and never about anything but running
+- **Race day** reuses the same type: LED readouts for the loop and the count, and a field of names that grey out and strike through as they drop
+
 ## Rules for content
 
 - Never invent a date, price, route, result, testimonial, sponsor or field size
