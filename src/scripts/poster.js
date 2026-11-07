@@ -84,7 +84,7 @@ export async function makePoster({ name, bib, dare }) {
   ctx.fillStyle = '#a9b6c9';
   ctx.fillText('TENTATIVE', 70 + ctx.measureText('2 JAN 2027  ').width, y);
   ctx.font = '500 36px Anek, sans-serif'; if ('fontStretch' in ctx) ctx.fontStretch = 'normal';
-  ctx.fillText('Thakur Village, Mumbai. lastlapbackyard.vercel.app', 70, y + 64);
+  ctx.fillText('Thakur Village, Mumbai.', 70, y + 64);
 
   ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = 0.09;
   ctx.fillStyle = ctx.createPattern(grain, 'repeat'); ctx.fillRect(0, 0, W, H);
