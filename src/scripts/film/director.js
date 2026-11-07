@@ -21,25 +21,40 @@ export function createDirector({ shots, total, phone, samples }) {
   const visible = samples.map(([x, y]) => (HIDDEN.some((h) => inside(x, y, h)) ? 0 : 1));
   const routeU = (pos) => ss(loop.start + loop.hold * 0.05, loop.start + loop.hold * 0.95, pos);
 
+  /* how far a shot's depth can push a pixel, which is half the parallax at its strongest */
+  const reach = (shot) => (shot.par ? [(shot.par[0] + 0.012) / 2, (shot.par[1] * 0.6 + 0.008) / 2] : [0, 0]);
+
+  /* each new loop lands as a step forward, then the camera settles */
+  const stepped = (shot, pos) => {
+    const h = (pos - shot.start) / shot.hold;
+    return shot.beats.reduce((sum, b) => sum + ss(b - 0.05, b + 0.1, h), 0) / shot.beats.length;
+  };
+
   function view(shot, pos, W, H, time) {
     const q = clamp((pos - (shot.start - TRANS)) / (shot.hold + 2 * TRANS));
     const sa = W / H, ia = shot.aspect, cam = shot.cam;
-    const z = lerp(cam.z[0], cam.z[1], q);
+    const move = shot.beats ? stepped(shot, pos) * 0.86 + q * 0.14 : q;
+    const z = lerp(cam.z[0], cam.z[1], move);
     /* a camera on a person's shoulder is never perfectly still */
     const hx = (Math.sin(time * 0.31 + shot.i) + 0.6 * Math.sin(time * 0.73 + shot.i * 2)) * 0.0017;
     const hy = (Math.sin(time * 0.27 + shot.i * 3) + 0.6 * Math.sin(time * 0.61)) * 0.0013;
-    let c = [lerp(cam.c[0][0], cam.c[1][0], q) + hx, lerp(cam.c[0][1], cam.c[1][1], q) + hy];
-    const vis = [Math.min(1, sa / ia) / z, Math.min(1, ia / sa) / z];
+    let c = [lerp(cam.c[0][0], cam.c[1][0], move) + hx, lerp(cam.c[0][1], cam.c[1][1], move) + hy];
+    const m = reach(shot);
+    /* the frame always stays inside the picture, with room for the parallax: beyond the
+       edge there is only the last row of pixels, smeared */
+    const w = Math.min(1, sa / ia) / z, h = Math.min(1, ia / sa) / z;
+    const over = Math.max(1, w / (1 - 2 * m[0]), h / (1 - 2 * m[1]));
+    const vis = [w / over, h / over];
     if (shot.route) {
       /* the camera leans toward the runners, and follows them closely on a phone */
       const p = samples[Math.round(routeU(pos) * (samples.length - 1))];
       const k = (phone ? 0.92 : 0.34) * ss(loop.start - 0.3, loop.start + 0.5, pos);
       c = [lerp(c[0], p[0] / PLATE[0], k), lerp(c[1], p[1] / PLATE[1], k * (phone ? 0.5 : 0.7))];
     }
-    return { c, vis, q };
+    return { c: fit(c, vis, m), vis, q, m };
   }
 
-  const fit = (c, vis) => [clamp(c[0], vis[0] / 2, 1 - vis[0] / 2), clamp(c[1], vis[1] / 2, 1 - vis[1] / 2)];
+  const fit = (c, vis, m) => [clamp(c[0], vis[0] / 2 + m[0], 1 - vis[0] / 2 - m[0]), clamp(c[1], vis[1] / 2 + m[1], 1 - vis[1] / 2 - m[1])];
   const screen = (L, v) => [(L[0] - v.c[0]) / v.vis[0] + 0.5, (L[1] - v.c[1]) / v.vis[1] + 0.5];
 
   /* fly toward a light, holding it at a chosen point on screen */
@@ -47,7 +62,7 @@ export function createDirector({ shots, total, phone, samples }) {
     const p0 = screen(L, v), z = 1 + PUSH * e * e;
     const p = [lerp(p0[0], target[0], e), lerp(p0[1], target[1], e)];
     const vis = [v.vis[0] / z, v.vis[1] / z];
-    const c = fit([L[0] - (p[0] - 0.5) * vis[0], L[1] - (p[1] - 0.5) * vis[1]], vis);
+    const c = fit([L[0] - (p[0] - 0.5) * vis[0], L[1] - (p[1] - 0.5) * vis[1]], vis, v.m);
     return { c, vis, p };
   }
 
@@ -100,7 +115,15 @@ export function createDirector({ shots, total, phone, samples }) {
       const hold = clamp((p - a.start) / a.hold);
       const same = a.in[0] === a.out[0] && a.in[1] === a.out[1];
       light = screen(same ? a.out : a.in, va);
+      /* a stepping shot leaves its first light behind, so the flare moves on with the camera */
+      if (a.beats) { const o = screen(a.out, va), w = ss(0.02, 0.2, hold); light = [lerp(light[0], o[0], w), lerp(light[1], o[1], w)]; }
       amp = (a.glow || 0) * (1 + 0.1 * Math.sin(time * 1.3)) * (same ? 1 : 1 - ss(0.6, 1, hold));
+      /* the bell lands in the lens: a hit of light and a small lurch at each new loop */
+      if (a.beats) {
+        const hit = a.beats.reduce((s, b) => s + Math.exp(-(((hold - b) / 0.032) ** 2)), 0);
+        amp = Math.max(amp, hit * 0.5);
+        f.blur[0] += hit * 0.05;
+      }
       tint = a.tint;
       f.fog[0] = a.fog || 0; f.fog[1] = 0;
     }

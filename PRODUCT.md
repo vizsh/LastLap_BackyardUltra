@@ -14,7 +14,7 @@ Delegated: the user left the choice to the designer. Final recommendation lives 
 
 The event is called **LastLap**. The logo is `public/brand/lastlap-logo.webp`: a brushed red ring with LAST in white and LAP in red. It is confirmed by the user and must not be redrawn.
 
-A concept website for an independent last-one-standing endurance race hosted in Thakur Village, Kandivali East, Mumbai. Runners complete one 6.706 km loop every hour, on the hour, until one runner remains.
+A concept website for an independent last-one-standing endurance race hosted in Thakur Village, Kandivali East, Mumbai. Runners complete one 6.706 km loop every hour, on the hour, until one runner remains. The race lasts 24 hours at most, so 24 loops (100 miles) is the limit.
 
 ## Stage
 
@@ -32,13 +32,16 @@ The race happens inside a dense Mumbai residential township, not on a remote tra
 
 ## Facts and constraints
 
-- Format facts: 6.706 km (4.167 miles) per hour; 24 loops equals 100 miles; miss a start or fail to finish a loop inside the hour and you are out.
+- Format facts: 6.706 km (4.167 miles) per hour; 24 loops at most, which is 100 miles; miss a start or fail to finish a loop inside the hour and you are out.
+- Date: 2 January 2027, tentative, from the organiser on 7 Nov 2026. The site must call it tentative until it's confirmed.
+- Contact, published at the organiser's request: Jeevesh Bodhani 9372031465, Om Tekriwal 7208515979.
 - Thakur Village sits east of the Western Express Highway, with a single main entry and exit from it. It has jogger's parks, Evershine Dream Park, and a cricket ground and stadium.
 - A separate "Mumbai Backyard Ultra" exists, organised by BigFoot Adventures India. This event must not use that name or anything confusable with it.
 
 ## Open decisions
 
-- Date, start time, season
+- Start time, and whether the date holds
+- What happens if more than one runner completes all 24 loops
 - Course route, surface and permissions
 - Entry cap, fee, prizes, organiser identity
 - Real media: none yet. The site uses licensed Pexels imagery, which doesn't show LastLap. Replace it with the test-night shoot when ready.

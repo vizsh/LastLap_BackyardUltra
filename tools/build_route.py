@@ -1,7 +1,9 @@
 """Bake the illustrative route into a texture the film can reveal with no per-frame drawing.
 
 Output route.png: R = lamp light, G and B = position along the route (16 bit).
-Also writes plate-route.webp, a flat version for visitors without the film, and plate-s.webp.
+Also writes plate-route.webp, a flat version for visitors without the film, and lamps.webp,
+the same lamps at twice the resolution and half the size. A phone sits so close to the road
+that route.png would be magnified into blurs, and it needs them to stay points of light.
 
 The route points are in the 1600 x 914 space of the aerial photograph. They must match
 src/scripts/film/route.js so the lead runner lines up with the reveal.
@@ -58,45 +60,51 @@ def sample(p, n):
 
 
 pts = sample(ROUTE, N)
-rng = np.random.default_rng(7)
-light = np.zeros((H, W), np.float32)
-yy, xx = np.mgrid[0:H, 0:W]
-
-# thin continuous trail, thinner with distance
-trail = Image.new("F", (W, H), 0)
 from PIL import ImageDraw  # noqa: E402
 
-d = ImageDraw.Draw(trail)
-for i in range(1, N):
-    a, b = pts[i - 1], pts[i]
-    w = 1 if b[1] < 560 else 2
-    d.line([tuple(a), tuple(b)], fill=1.0, width=w)
-trail = ndi.gaussian_filter(np.asarray(trail), 0.7) * 0.55
-light += trail
 
-# hundreds of tiny lamps along the road, like runners in a long exposure
-for i in range(0, N):
-    if rng.random() > 0.55:
-        continue
-    x, y = pts[i]
-    depth = y / H
-    nrm = pts[min(i + 1, N - 1)] - pts[max(i - 1, 0)]
-    nrm = np.array([-nrm[1], nrm[0]]) / (np.hypot(*nrm) + 1e-6)
-    x, y = np.array([x, y]) + nrm * rng.normal(0, 0.8 + depth * 3.2)
-    r = (0.75 + depth * 1.9) * rng.uniform(0.7, 1.25)
-    k = int(r * 4) + 2
-    x0, y0 = int(x) - k, int(y) - k
-    gx, gy = xx[y0:y0 + 2 * k, x0:x0 + 2 * k], yy[y0:y0 + 2 * k, x0:x0 + 2 * k]
-    light[y0:y0 + 2 * k, x0:x0 + 2 * k] += np.exp(-((gx - x) ** 2 + (gy - y) ** 2) / (2 * r * r)) * rng.uniform(0.45, 1.0)
+def lamps(s, trail_level):
+    """Draw the lamp map at s times the photograph's route space."""
+    w_, h_ = W * s, H * s
+    rng = np.random.default_rng(7)
+    out = np.zeros((h_, w_), np.float32)
+    yy, xx = np.mgrid[0:h_, 0:w_]
 
-# hide what passes behind the towers
-hide = np.zeros((H, W), bool)
-for poly in HIDDEN:
-    im = Image.new("L", (W, H), 0)
-    ImageDraw.Draw(im).polygon([tuple(p) for p in poly], fill=255)
-    hide |= np.asarray(im) > 0
-soft = ndi.gaussian_filter(hide.astype(np.float32), 1.2)
-light = np.clip(light, 0, 1) * (1 - soft)
+    # thin continuous trail, thinner with distance
+    trail = Image.new("F", (w_, h_), 0)
+    d = ImageDraw.Draw(trail)
+    for i in range(1, N):
+        a, b = pts[i - 1], pts[i]
+        d.line([tuple(a * s), tuple(b * s)], fill=1.0, width=1 if b[1] < 560 else 2)
+    out += ndi.gaussian_filter(np.asarray(trail), 0.7) * trail_level
+
+    # hundreds of tiny lamps along the road, like runners in a long exposure
+    for i in range(0, N):
+        if rng.random() > 0.55:
+            continue
+        x, y = pts[i]
+        depth = y / H
+        nrm = pts[min(i + 1, N - 1)] - pts[max(i - 1, 0)]
+        nrm = np.array([-nrm[1], nrm[0]]) / (np.hypot(*nrm) + 1e-6)
+        x, y = (np.array([x, y]) + nrm * rng.normal(0, 0.8 + depth * 3.2)) * s
+        r = (0.75 + depth * 1.9) * rng.uniform(0.7, 1.25)
+        k = int(r * 4) + 2
+        x0, y0 = int(x) - k, int(y) - k
+        gx, gy = xx[y0:y0 + 2 * k, x0:x0 + 2 * k], yy[y0:y0 + 2 * k, x0:x0 + 2 * k]
+        out[y0:y0 + 2 * k, x0:x0 + 2 * k] += np.exp(-((gx - x) ** 2 + (gy - y) ** 2) / (2 * r * r)) * rng.uniform(0.45, 1.0)
+
+    # hide what passes behind the towers
+    hide = np.zeros((h_, w_), bool)
+    for poly in HIDDEN:
+        im = Image.new("L", (w_, h_), 0)
+        ImageDraw.Draw(im).polygon([(p[0] * s, p[1] * s) for p in poly], fill=255)
+        hide |= np.asarray(im) > 0
+    soft = ndi.gaussian_filter(hide.astype(np.float32), 1.2 * s)
+    return np.clip(out, 0, 1) * (1 - soft)
+
+
+light = lamps(1, 0.55)
+Image.fromarray((lamps(2, 0.3) * 255).astype(np.uint8)).save(f"{M}/lamps.webp", quality=82, method=6)
 
 # position along the route for every pixel near it
 seed = np.ones((H, W), bool)
@@ -120,7 +128,5 @@ glow = ndi.gaussian_filter(big, 7)
 p = np.clip(p + big[..., None] * np.array([1, 0.3, 0.2]) + glow[..., None] * np.array([0.9, 0.12, 0.08]), 0, 1)
 Image.fromarray((p * 255).astype(np.uint8)).resize((1920, round(1920 * plate.height / plate.width)), Image.LANCZOS).save(f"{M}/plate-route.webp", quality=78, method=6)
 
-# phones need the whole aerial too, because the camera follows the runners across it
-plate.resize((1800, round(1800 * plate.height / plate.width)), Image.LANCZOS).save(f"{M}/plate-s.webp", quality=74, method=6)
-for f in ("route.png", "plate-route.webp", "plate-s.webp"):
+for f in ("route.png", "plate-route.webp", "lamps.webp"):
     print(f, os.path.getsize(f"{M}/{f}") // 1024, "KB")

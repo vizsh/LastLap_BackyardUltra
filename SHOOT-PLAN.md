@@ -68,14 +68,14 @@ These slots go straight into the site. The **Must** shots matter most for making
 | # | Site slot | Priority | The shot | How to get it |
 |---|---|---|---|---|
 | 1 | **Opening** | Must | Line-up in headlamps, waiting for the start | Runners pack shoulder to shoulder and look down at their watches. Camera at chest height, in front of them. Backlight through sprayed mist |
-| 2 | **Hour 46 clock** | Must | Runners leaving, with the red clock beside them | Press 46:00:00 on the clock, then Full screen, and put it on a table to one side, in frame. Runners walk out of the dark towards the camera |
+| 2 | **Hour 23 clock** | Must | Runners leaving, with the red clock beside them | Press 23:00:00 on the clock, then Full screen, and put it on a table to one side, in frame. Runners walk out of the dark towards the camera |
 | 3 | **Hour 01 tents** | Must | Crew tent at dusk with warm bulbs | Blue hour only. Shoot wide, with people moving around, and sky filling the top half |
 | 4 | **Last light** | Must | One runner, alone, lit only by a headlamp | Wide shot, with the runner small in the frame. Everyone else stays out of sight. Towers dark behind |
 | 5 | **एक और** | Must | Crowd in red haze | Red panels behind the group, low fog drifting through, headlamps on. The top half stays empty for the type |
 | 6 | **The Loop** | High | Towers and a lit road from above | Rooftop, on a tripod, in blue hour. This becomes the new route photo, so keep it perfectly still and wide |
 | 7 | **Again** | High | Long exposure of traffic light trails | Rooftop, on a tripod, after dark. A curve or junction is best, ideally the highway |
 | 8 | **Hour 06** | Nice | Runners from behind, on video | Follow at walking pace, low and steady, for 15 seconds. No faces |
-| 9 | **Hour 24** | Nice | Sunrise over the towers | Sunday, rooftop, 06:20 to 06:50 |
+| 9 | **Hour 15** | Nice | Sunrise over the towers | Sunday, rooftop, 06:20 to 06:50 |
 
 ---
 
@@ -95,7 +95,7 @@ These slots go straight into the site. The **Must** shots matter most for making
 | 20:55 to 21:25 | **#4 Last light** | Portrait version of #4 |
 | 21:25 to 21:45 | **#8 Hour 06** | Behind-the-scenes photos |
 | 21:45 to 22:00 | Thank everyone, pack up, leave the site clean | Back up both phones |
-| **Sun 06:15** | **#9 Hour 24**, one person on the rooftop | |
+| **Sun 06:15** | **#9 Hour 15**, one person on the rooftop | |
 
 If time runs short, cut from the bottom of the table. Shots 1 to 5 matter most.
 

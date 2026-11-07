@@ -1,5 +1,6 @@
 ---
 import '../styles/site.css';
+import Countdown from '../components/Countdown.astro';
 ---
 <!doctype html>
 <html lang="en">
@@ -7,10 +8,10 @@ import '../styles/site.css';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>LastLap. One more.</title>
-    <meta name="description" content="LastLap is a last-one-standing race in Thakur Village, Mumbai. 6.706 km every hour until one runner remains. By reservation." />
+    <meta name="description" content="LastLap is a last-one-standing race in Thakur Village, Mumbai. 6.706 km every hour, up to 24 loops and 100 miles. 2 January 2027, tentative." />
     <meta name="theme-color" content="#070304" />
     <meta property="og:title" content="LastLap. One more." />
-    <meta property="og:description" content="6.706 km every hour until one runner remains. Thakur Village, Mumbai. By reservation." />
+    <meta property="og:description" content="6.706 km every hour, up to 24 loops and 100 miles. Thakur Village, Mumbai. Not for everyone." />
     <meta property="og:image" content="/media/og.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.png" />
@@ -25,17 +26,18 @@ import '../styles/site.css';
     </script>
   </head>
   <body>
-    <a class="skip" href="#reserve">Skip to reservation</a>
-    <canvas id="film" role="img" aria-label="A continuous film of a night race: a runner in fog, a route through Mumbai, and the hours passing until one runner remains."></canvas>
+    <a class="skip" href="#register">Skip to registration</a>
+    <canvas id="film" role="img" aria-label="A continuous film of a night race: a runner in fog, a route through Mumbai, and 24 hours passing until one runner remains."></canvas>
 
     <div class="gate film-only" id="gate">
       <div class="gate-in">
         <img src="/brand/lastlap-logo-small.webp" alt="LastLap" width="280" height="280" />
-        <p class="gate-pct" aria-hidden="true"><span id="gatePct">000</span></p>
+        <p class="gate-line">Thakur Village, Mumbai. 2 January 2027, tentative.</p>
         <div class="gate-go">
-          <button id="enterSound" type="button">Start with sound</button>
-          <button id="enterQuiet" type="button">Start silent</button>
+          <button id="enterIntro" type="button" disabled>Event intro<i id="gateBar" aria-hidden="true"></i></button>
+          <button id="enterRegister" type="button">Register now<i aria-hidden="true"></i></button>
         </div>
+        <button class="sound gate-sound" id="gateSound" type="button" aria-pressed="false"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><span>Sound</span></button>
       </div>
     </div>
 
@@ -43,7 +45,7 @@ import '../styles/site.css';
       <a class="bar-logo" href="#start"><img src="/brand/lastlap-logo-small.webp" alt="LastLap" width="280" height="280" /></a>
       <div class="bar-right">
         <button class="sound film-only" id="sound" type="button" aria-pressed="false"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><span>Sound</span></button>
-        <a class="bar-cta" href="#reserve">Reserve</a>
+        <a class="bar-cta" href="#register">Register</a>
       </div>
     </header>
 
@@ -53,7 +55,7 @@ import '../styles/site.css';
       <a href="#loop"><span>The loop</span></a>
       <a href="#night"><span>The night</span></a>
       <a href="#last"><span>Last light</span></a>
-      <a href="#reserve"><span>Reserve</span></a>
+      <a href="#register"><span>Register</span></a>
     </nav>
 
     <div class="hud film-only" id="hud" aria-hidden="true">
@@ -73,12 +75,9 @@ import '../styles/site.css';
             <div class="copy" data-first>
               <p class="hi" lang="hi"><span class="ln"><span>एक और</span></span></p>
               <h1 class="mega"><span class="ln"><span>One more.</span></span></h1>
-              <p class="sub"><span class="ln"><span>6.706 km. Every hour. Until one runner remains.</span></span></p>
+              <p class="sub"><span class="ln"><span>6.706 km. Every hour. For up to 24 hours.</span></span></p>
             </div>
-            <div class="next" id="next" role="group" aria-label="Time to the next hourly start">
-              <span class="label">NEXT START</span>
-              <span class="led"><span id="clockM">00</span><i class="colon"></i><span id="clockS">00</span></span>
-            </div>
+            <Countdown class="next" id="next" />
             <p class="cue film-only" id="cue" aria-hidden="true"><i></i>Scroll</p>
           </section>
 
@@ -91,97 +90,104 @@ import '../styles/site.css';
           </section>
 
           <section class="beat" data-shot="again">
-            <picture><source media="(max-width: 760px)" srcset="/media/again-m.webp" /><img src="/media/again.webp" alt="Long exposure of red traffic trails passing Chhatrapati Shivaji Terminus in Mumbai at night" width="2560" height="1775" loading="lazy" /></picture>
-            <div class="copy"><p class="mega"><span class="ln"><span>Again.</span></span></p></div>
+            <picture><source media="(max-width: 760px)" srcset="/media/again-m.webp" /><img src="/media/again.webp" alt="Long exposure at Chhatrapati Shivaji Terminus in Mumbai: a figure stands still in the road while red traffic trails pass through them" width="2560" height="2184" loading="lazy" /></picture>
+            <div class="copy stack" id="stack">
+              <p class="row r1"><span class="ln"><span>Again.</span></span><span class="tag">LOOP 02</span></p>
+              <p class="row r2"><span class="ln"><span>And again.</span></span><span class="tag">LOOP 03</span></p>
+              <p class="row r3"><span class="ln"><span>And again.</span></span><span class="tag">LOOP 04</span></p>
+              <p class="sub"><span class="ln"><span>Up to 24 times, if you last.</span></span></p>
+            </div>
           </section>
 
           <section class="beat" data-shot="field" id="night">
             <picture><source media="(max-width: 760px)" srcset="/media/field-m.webp" /><img src="/media/field.webp" alt="Aerial view of a river of runners on a tree-lined road at night" width="2560" height="1629" loading="lazy" /></picture>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 01</span></span></p><p class="big"><span class="ln"><span>Everyone still believes.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 04</span></span></p><p class="big"><span class="ln"><span>Everyone still believes.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="run">
             <picture><source media="(max-width: 760px)" srcset="/media/run-m.webp" /><img src="/media/run.webp" alt="Three runners seen from behind on a wet waterfront path at night" width="1920" height="1080" loading="lazy" /></picture>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 03</span></span></p><p class="big"><span class="ln"><span>Still easy. Still talking.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 06</span></span></p><p class="big"><span class="ln"><span>Still easy. Still talking.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="shore">
             <picture><source media="(max-width: 760px)" srcset="/media/shore-m.webp" /><img src="/media/shore.webp" alt="Silhouettes of runners crossing in front of a lit city across the water" width="1920" height="1080" loading="lazy" /></picture>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 06</span></span></p><p class="big"><span class="ln"><span>The city goes to sleep.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 08</span></span></p><p class="big"><span class="ln"><span>The city goes to sleep.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="train">
             <picture><source media="(max-width: 760px)" srcset="/media/train-m.webp" /><img src="/media/train.webp" alt="A train streaking past a red-lit platform at night under a red LED clock, with one person waiting" width="2560" height="1552" loading="lazy" /></picture>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 11</span></span></p><p class="big"><span class="ln"><span>The last local leaves.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 10</span></span></p><p class="big"><span class="ln"><span>The last local leaves.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="lone">
             <picture><source media="(max-width: 760px)" srcset="/media/lone-m.webp" /><img src="/media/lone.webp" alt="A lone runner in silhouette against a lit colonnade, reflected in wet ground" width="2560" height="1613" loading="lazy" /></picture>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 15</span></span></p><p class="big"><span class="ln"><span>No one is watching.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 13</span></span></p><p class="big"><span class="ln"><span>No one is watching.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="dawn">
             <picture><source media="(max-width: 760px)" srcset="/media/dawn-m.webp" /><img src="/media/dawn.webp" alt="Mumbai towers at first light" width="1920" height="1080" loading="lazy" /></picture>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 24</span></span></p><p class="big"><span class="ln"><span>100 miles. Still running.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 15</span></span></p><p class="big"><span class="ln"><span>100 km. Nine loops to go.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="rain">
             <picture><source media="(max-width: 760px)" srcset="/media/rain-m.webp" /><img src="/media/rain.webp" alt="Rain falling through a single streetlight in the dark" width="1920" height="1080" loading="lazy" /></picture>
             <div class="bigclock film-only" id="bigClock" aria-hidden="true"><svg id="bigDigits" viewBox="0 0 802 170"></svg></div>
-            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 46</span></span></p><p class="big"><span class="ln"><span>There is no finish.</span></span></p></div>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 23</span></span></p><p class="big"><span class="ln"><span>One bell left.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="last" id="last">
-            <picture><source media="(max-width: 760px)" srcset="/media/last-m.webp" /><img src="/media/last.webp" alt="One runner in silhouette in a backlit lane, casting a long shadow" width="2560" height="1632" loading="lazy" /></picture>
-            <div class="copy"><p class="mega"><span class="ln"><span>Last one</span></span><span class="ln"><span>standing.</span></span></p></div>
+            <picture><source media="(max-width: 760px)" srcset="/media/last-m.webp" /><img src="/media/last.webp" alt="One runner in full stride, in silhouette against a low red sun" width="2560" height="1462" loading="lazy" /></picture>
+            <div class="copy"><p class="hr"><span class="ln"><span>HOUR 24</span></span></p><p class="mega"><span class="ln"><span>Last one</span></span><span class="ln"><span>standing.</span></span></p></div>
           </section>
 
           <section class="beat" data-shot="flares">
             <picture><source media="(max-width: 760px)" srcset="/media/flares-m.webp" /><img src="/media/flares.webp" alt="" width="2560" height="1434" loading="lazy" /></picture>
             <div class="copy copy-mid" data-final>
               <p class="colossal" lang="hi"><span class="ln"><span>एक और</span></span></p>
-              <p class="sub"><span class="ln"><span>Every hour, on the hour, until one is left.</span></span></p>
+              <p class="sub"><span class="ln"><span>6.706 km. Every hour, on the hour. 24 loops at most.</span></span></p>
             </div>
           </section>
         </div>
       </div>
 
-      <section class="reserve" id="reserve">
-        <div class="reserve-copy">
-          <h2 class="reveal"><span class="ln"><span>By reservation</span></span><span class="ln"><span>only.</span></span></h2>
-          <p class="lede reveal"><span class="ln"><span>One start line. No finish line. A limited field, and it closes when it's full.</span></span></p>
+      <section class="register" id="register">
+        <div class="entry" id="entry">
+          <div class="entry-art" id="entryArt">
+          <picture class="entry-bg"><source media="(max-aspect-ratio: 9/10)" srcset="/media/last-m.webp" width="1080" height="1920" /><img src="/media/last.webp" alt="A runner in full stride in front of a low red sun" width="2560" height="1462" loading="lazy" /></picture>
+          <p class="giant reveal" id="giant" aria-hidden="true"><span class="ln"><span>Not for</span></span><span class="ln"><span>everyone.</span></span></p>
+          <picture class="entry-fg"><source media="(max-aspect-ratio: 9/10)" srcset="/media/last-m-fg.webp" width="1080" height="1920" /><img src="/media/last-fg.webp" alt="" width="2560" height="1462" loading="lazy" /></picture>
+          <i class="entry-shade" aria-hidden="true"></i>
+          </div>
 
-          <form id="list" novalidate>
-            <div class="row">
+          <div class="entry-foot">
+            <h2 class="sr-only">Not for everyone.</h2>
+            <p class="lede reveal"><span class="ln"><span>For the elite, and for anyone crazy enough to find out where they stop.</span></span><span class="ln"><span>Everyone else hears about it.</span></span></p>
+            <Countdown class="entry-count" />
+            <form id="list" novalidate>
               <div class="field"><label for="name">Name on your bib</label><input id="name" name="name" type="text" autocomplete="name" maxlength="22" placeholder="Your name" /></div>
               <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="listMsg" /></div>
-            </div>
-            <button class="reserve-btn" type="submit"><span>Reserve my place</span></button>
-            <p id="listMsg" class="msg" role="status"></p>
-            <p class="fine">Reserving registers your interest ahead of entry. It isn't an entry or a payment.</p>
-          </form>
-        </div>
-
-        <div class="bib-stage" id="bibStage" aria-hidden="true">
-          <div class="bib" id="bib">
-            <i class="hole h1"></i><i class="hole h2"></i><i class="hole h3"></i><i class="hole h4"></i>
-            <div class="bib-top">
-              <img src="/brand/lastlap-logo-alpha.webp" alt="" width="1080" height="1080" loading="lazy" />
-              <div class="bib-meta"><b>THAKUR VILLAGE</b><span>MUMBAI</span></div>
-            </div>
-            <p class="bib-name" id="bibName">YOUR NAME</p>
-            <div class="bib-foot"><span>RESERVED</span><span>6.706 KM / EVERY HOUR</span></div>
-            <div class="bib-stub"><span>ADMIT ONE RUNNER</span><b>NO FINISH LINE</b></div>
-            <i class="bib-lamp"></i>
+              <button class="go" type="submit">Put my name down</button>
+              <p id="listMsg" class="msg" role="status"></p>
+            </form>
           </div>
         </div>
 
-        <dl class="facts">
-          <div><dt>Format</dt><dd>6.706 km every hour until one runner remains</dd></div>
-          <div><dt>Where</dt><dd>Thakur Village, Mumbai</dd></div>
-          <div><dt>When</dt><dd>To be announced</dd></div>
-          <div><dt>Places</dt><dd>Limited, by reservation</dd></div>
-        </dl>
+        <div class="after">
+          <dl class="facts">
+            <div><dt>Format</dt><dd>6.706 km every hour. 24 loops at most, which is 100 miles.</dd></div>
+            <div><dt>Where</dt><dd>Thakur Village, Mumbai</dd></div>
+            <div><dt>When</dt><dd>2 January 2027, tentative</dd></div>
+            <div><dt>Places</dt><dd>Limited. Your name on the list isn't an entry or a payment.</dd></div>
+          </dl>
+
+          <div class="contact" id="contact">
+            <h2>Contact us for more info</h2>
+            <ul>
+              <li><a href="tel:+919372031465"><span>Jeevesh Bodhani</span><b>+91 93720 31465</b></a></li>
+              <li><a href="tel:+917208515979"><span>Om Tekriwal</span><b>+91 72085 15979</b></a></li>
+            </ul>
+          </div>
+        </div>
       </section>
     </main>
 

@@ -352,19 +352,21 @@ Your brief is hype first and concept only, so the first target is a working slic
 
 **What's built**
 
-- Start gate with real loading and a choice of sound
-- Opening, The Loop, Again, The Night (seven hours of real imagery), Last light, एक और
+- An opening choice: Event intro plays the film, Register now goes straight to the form without downloading the film
+- A countdown to 2 January 2027, marked tentative, in the opening and beside the form
+- Opening, The Loop, Again (a lap sheet of three loops), The Night (hours 4 to 23), Last light with a runner in full stride, एक और
 - Parallax on every photograph from estimated depth maps
 - Route baked into a texture, so the film reveals it with no per-frame drawing
-- Race time, loop and distance running through the whole film, and a giant clock at hour 46
+- Race time, loop and distance running through the whole film, capped at 24 loops, 160.9 km and 24:00:00, and a giant clock at hour 23
 - Sound from real recordings: live mix per shot, footsteps paced by scroll speed, a bell when the loop closes
-- Reservation section with a bib that takes your name
+- Registration as a poster: the visitor's name stands in the sky behind the runner as they type it
+- Contact us for more info, with both organisers' numbers
 - Plain stacked page for reduced motion, no WebGL and no JavaScript
 - Race clock prop at `/clock`
 
 **All imagery is licensed.** Every image and clip on the site comes from Pexels, so local and deployed versions are identical. The earlier photos from other events are no longer used.
 
-**Not built:** a chosen reservation service, a rulebook page, and a real route. Until `PUBLIC_LIST_ENDPOINT` is set, the form says nothing was saved. The field size isn't shown, because no number has been decided.
+**Not built:** a chosen registration service, a rulebook page, and a real route. Until `PUBLIC_LIST_ENDPOINT` is set, the form says nothing was saved. The field size isn't shown, because no number has been decided.
 
 **Measured:** 18 KB of compressed script before the film, 16 KB of it loaded only when the film runs. Clips stream as you approach them. Not yet tested on a real phone.
 

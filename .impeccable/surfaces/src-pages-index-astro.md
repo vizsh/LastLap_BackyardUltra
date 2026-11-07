@@ -17,7 +17,7 @@ OWN-WORLD: Warm ink black at page scale, oxblood smoke fields, Flare red reserve
 
 STORY: Visitors see one light start, understand the loop through a 3D route over the real township, watch the field die across a night, see one light left, then put their name down.
 
-FIRST VIEWPORT: Near-total black. Huge "एक और" / "One more." as the single large element, a red LED clock counting to the next real hour, thin hour rail on the left edge, one quiet "Put your name down" action. No navigation bar.
+FIRST VIEWPORT: Near-total black. Huge "एक और" / "One more." as the single large element, a red LED countdown to 2 January 2027, marked tentative, thin hour rail on the left edge, one quiet "Put your name down" action. Before it, an opening choice: Event intro or Register now. No navigation bar.
 
 FORM: Long-exposure light photography, candidate 7 on the ordered list, seed key f827d53d.
 

@@ -14,7 +14,7 @@ All from [Pexels](https://www.pexels.com/license/), graded and cropped.
 | `field` | [Night marathon in urban street setting](https://www.pexels.com/photo/nighttime-marathon-in-urban-street-setting-38674751/) |
 | `train` | [Nighttime view of a train station platform](https://www.pexels.com/photo/nighttime-view-of-kolkata-train-station-platform-30439443/) |
 | `lone` | [Silhouette running in front of an illuminated building](https://www.pexels.com/photo/silhouette-of-woman-running-in-front-of-an-illuminated-building-at-night-14532913/) |
-| `last` | [Silhouette on a dimly lit street](https://www.pexels.com/photo/silhouette-of-person-walking-on-dimly-lit-street-38500580/) |
+| `last` | [Silhouette of a man jogging at sunset](https://www.pexels.com/photo/silhouette-of-a-man-jogging-at-sunset-16949283/). The registration poster cuts the runner, the land and the sun out of the same photograph (`last-fg`) |
 | `flares` | [Crowd holding red flares at night](https://www.pexels.com/photo/vibrant-crowd-holding-red-flares-at-night-36668157/) |
 
 ## Footage
@@ -37,6 +37,7 @@ Recordings from [Mixkit](https://mixkit.co/free-sound-effects/), edited and mixe
 ## Type and tools
 
 - [Anek](https://github.com/EkType/Anek) by Ek Type, and Doto, under the SIL Open Font License
+- The route lamps (`route.png`, `lamps.webp`) are drawn by `tools/build_route.py`. Nothing else on the site is generated
 - Depth maps were estimated offline with [Depth Anything V2 Small](https://huggingface.co/onnx-community/depth-anything-v2-small) (Apache 2.0)
 - Astro and Lenis
 

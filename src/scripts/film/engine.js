@@ -8,12 +8,13 @@ const VERT = `#version 300 es
 in vec2 p; out vec2 vUv;
 void main(){ vUv = p * .5 + .5; gl_Position = vec4(p, 0., 1.); }`;
 
-const frag = (taps, octaves) => `#version 300 es
+const frag = (taps, octaves, close) => `#version 300 es
 precision highp float;
 #define TAPS ${taps}
 #define OCT ${octaves}
+#define CLOSE ${close ? 1 : 0}
 in vec2 vUv; out vec4 outColor;
-uniform sampler2D uA, uB, uDA, uDB, uR;
+uniform sampler2D uA, uB, uDA, uDB, uR, uL;
 uniform vec4 uCamA, uCamB, uPar;
 uniform vec2 uHasD, uLA, uLB, uBlur, uFog, uLight, uHead;
 uniform vec3 uTint, uRoute, uPtr;
@@ -50,17 +51,24 @@ vec3 take(sampler2D t, vec2 uv, vec2 L, float blur){
 vec3 route(vec2 uv){
   vec3 r = textureLod(uR, uv, 0.).rgb;
   float u = (r.g * 65280. + r.b * 255.) / 65535.;
+#if CLOSE
+  /* a phone sits close to the road, so it gets sharper lamps and a tighter glow */
+  r.r = textureLod(uL, uv, 0.).r;
+  const float haze = .2, core = .000005, bloom = .00022;
+#else
+  const float haze = .34, core = .000012, bloom = .0007;
+#endif
   float p = uRoute.y;
   float front = smoothstep(u - .0006, u + .0026, p);
   float age = max(p - u, 0.);
   float hot = exp(-age * age / .00009);
   float wide = textureLod(uR, uv, 3.).r;
   vec3 c = r.r * r.r * (vec3(1., .16, .08) * 2.6 + vec3(1., .78, .62) * hot * 7.);
-  c += wide * vec3(1., .09, .05) * .34;
+  c += wide * vec3(1., .09, .05) * haze;
   vec2 d = (uv - uHead) * vec2(1.75, 1.);
   float q = dot(d, d);
   float lead = uHeadOn * step(.002, p) * step(p, .998);
-  return c * front * uRoute.z + (vec3(1., .8, .68) * exp(-q / .000012) * 1.5 + vec3(1., .2, .1) * exp(-q / .0007) * .16) * uRoute.z * lead;
+  return c * front * uRoute.z + (vec3(1., .8, .68) * exp(-q / core) * 1.5 + vec3(1., .2, .1) * exp(-q / bloom) * .16) * uRoute.z * lead;
 }
 
 vec3 fogged(vec3 c, vec2 s, float amt, vec3 tint){
@@ -154,7 +162,7 @@ export class Film {
     /* compile in the background where the browser allows it, so the page never freezes */
     const stage = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
     const prog = gl.createProgram();
-    const vs = stage(gl.VERTEX_SHADER, VERT), fs = stage(gl.FRAGMENT_SHADER, frag(phone ? 5 : 8, phone ? 3 : 4));
+    const vs = stage(gl.VERTEX_SHADER, VERT), fs = stage(gl.FRAGMENT_SHADER, frag(phone ? 5 : 8, phone ? 3 : 4, phone));
     gl.attachShader(prog, vs); gl.attachShader(prog, fs);
     gl.linkProgram(prog);
     this.compiled = this.link(prog, fs);
@@ -181,7 +189,7 @@ export class Film {
     this.u = {};
     const n = gl.getProgramParameter(prog, gl.ACTIVE_UNIFORMS);
     for (let i = 0; i < n; i++) { const a = gl.getActiveUniform(prog, i); this.u[a.name] = gl.getUniformLocation(prog, a.name); }
-    ['uA', 'uB', 'uDA', 'uDB', 'uR'].forEach((k, i) => gl.uniform1i(this.u[k], i));
+    ['uA', 'uB', 'uDA', 'uDB', 'uR', 'uL'].forEach((k, i) => gl.uniform1i(this.u[k], i));
   }
 
   blank(px) {
@@ -225,8 +233,9 @@ export class Film {
   }
 
   async loadRoute() {
-    const img = await this.image('/media/route.png');
+    const [img, lamps] = await Promise.all([this.image('/media/route.png'), this.phone ? this.image('/media/lamps.webp') : null]);
     this.routeTex = this.upload(img, true);
+    if (lamps) this.lampTex = this.upload(lamps, false);
   }
 
   pump(n = 1) {
@@ -296,7 +305,7 @@ export class Film {
     const gl = this.gl, u = this.u;
     const bind = (unit, tex) => { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, tex); };
     bind(0, f.a.tex || this.black); bind(1, (f.b || f.a).tex || this.black);
-    bind(2, f.a.depthTex || this.grey); bind(3, (f.b || f.a).depthTex || this.grey); bind(4, this.routeTex);
+    bind(2, f.a.depthTex || this.grey); bind(3, (f.b || f.a).depthTex || this.grey); bind(4, this.routeTex); bind(5, this.lampTex || this.black);
     gl.uniform4fv(u.uCamA, f.camA); gl.uniform4fv(u.uCamB, f.camB); gl.uniform4fv(u.uPar, f.par);
     gl.uniform2f(u.uHasD, f.a.depthTex ? 1 : 0, f.b?.depthTex ? 1 : 0);
     gl.uniform2fv(u.uLA, f.lightA); gl.uniform2fv(u.uLB, f.lightB);

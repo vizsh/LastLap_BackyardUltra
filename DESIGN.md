@@ -58,13 +58,19 @@ If new Hindi words are added, rebuild the subset font, or they will fall back to
 
 ## Layout
 
-- No navigation bar beyond the logo, Sound and Reserve
+- No navigation bar beyond the logo, Sound and Register
 - One persistent race readout: loop, kilometres and time
 - No cards, stat rows, FAQ or galleries
+
+## Key moments
+
+- **The opening** is two choices set in display type, Event intro and Register now, with a quiet sound switch. Event intro stays dim while the film loads, and its underline is the loading bar. Register now works at once
+- **Again** is a lap sheet. Each loop adds a row with a hairline and its loop number, pushes the last row up, and is heavier and narrower than the one before: weight 300 at width 116%, then 500 at 96%, then 800 at 76%. The camera steps closer on each bell
+- **The registration poster** stands words in the sky of the Last light photograph, between the photograph and a cut-out of its own runner and land. The invitation stops short of the runner so it can be read whole. A typed name fills the sky and runs behind them. The two photographic layers never move apart, or the runner shows a double edge
 
 ## Rules for content
 
 - Never invent a date, price, route, result, testimonial, sponsor or field size
-- Anything unconfirmed stays labelled: "Illustrative route", "To be announced"
+- Anything unconfirmed stays labelled: "Illustrative route", "To be announced", "Tentative"
 - Stock or staged images must not be presented as a past LastLap race
 - Don't claim affiliation with any other race or series

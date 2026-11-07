@@ -1,0 +1,17 @@
+---
+/* The race countdown. main.js fills every copy of it from one start time. */
+interface Props { class?: string; id?: string }
+const { class: cls, id } = Astro.props;
+const units = [['d', 'DAYS'], ['h', 'HRS'], ['m', 'MIN'], ['s', 'SEC']];
+---
+<div class:list={['count', cls]} id={id} role="timer" aria-label="Countdown to the start on 2 January 2027. The date is tentative.">
+  <p class="count-when"><span>2 JAN 2027</span><span>TENTATIVE</span></p>
+  <div class="count-led" data-count>
+    {units.map(([key, label], i) => (
+      <Fragment>
+        {i > 0 && <i class="colon"></i>}
+        <span class="count-unit"><b data-u={key}>00</b><small>{label}</small></span>
+      </Fragment>
+    ))}
+  </div>
+</div>

@@ -19,16 +19,16 @@ os.makedirs(OUT, exist_ok=True)
 STILLS = {
     "open": ("34720620", (0, 0, 1, 1), 0.5, (0, 1), dict(sat=1.0, black=0.012, gamma=1.08)),
     "plate": ("37352236", (0, 0, 1, 1), 0.5, (0, 1), dict(sat=0.62, black=0.012, gamma=1.16, warm=0.02)),
-    "again": ("13079390", (0, 0.135, 1, 0.655), 0.52, (0, 1), dict(sat=1.0, black=0.015, gamma=1.1)),
+    "again": ("13079390", (0, 0.33, 1, 0.97), 0.52, (0, 1), dict(sat=1.0, black=0.015, gamma=1.1)),
     "field": ("38674751", (0, 0.08, 1, 0.93), 0.555, (0, 1), dict(sat=0.86, black=0.012, gamma=1.08)),
     "train": ("30439443", (0, 0.1, 1, 0.92), 0.56, (0, 1), dict(sat=1.0, black=0.01, gamma=1.06)),
     "lone": ("14532913", (0, 0.3, 1, 0.72), 0.42, (0.06, 1), dict(sat=0.95, black=0.012, gamma=1.1)),
-    "last": ("38500580", (0, 0.26, 1, 0.74), 0.585, (0, 1), dict(sat=0.86, black=0.012, gamma=1.12)),
+    "last": ("16949283", (0, 0.36, 1, 0.817), 0.52, (0.09, 1), dict(sat=0.98, black=0.012, gamma=1.3, tone=(1.0, 0.8, 0.66))),
     "flares": ("36668157", (0, 0, 1, 0.84), 0.5, (0, 0.86), dict(sat=0.94, black=0.012, gamma=1.14)),
 }
 
 
-def grade(a, sat=1.0, black=0.0, gamma=1.0, warm=0.0):
+def grade(a, sat=1.0, black=0.0, gamma=1.0, warm=0.0, tone=None):
     luma = (a @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32))[..., None]
     a = luma + (a - luma) * sat
     a = np.clip((a - black) / (1 - black), 0, 1) ** gamma
@@ -36,6 +36,10 @@ def grade(a, sat=1.0, black=0.0, gamma=1.0, warm=0.0):
     a = np.where(a > 0.82, 0.82 + (a - 0.82) * 0.82, a)
     if warm:
         a = a * np.array([1 + warm, 1, 1 - warm], dtype=np.float32)
+    if tone:
+        # pulls a golden sky toward the site's ember red, leaving the hottest light alone
+        hot = np.clip((a.max(axis=-1, keepdims=True) - 0.8) / 0.2, 0, 1)
+        a = a * (np.array(tone, dtype=np.float32) * (1 - hot) + hot)
     return np.clip(a, 0, 1)
 
 
@@ -57,12 +61,18 @@ for name, (sid, box, fx, ys, g) in STILLS.items():
     a = grade(a, **g)
 
     x0, y0, x1, y1 = [int(v) for v in (box[0] * W, box[1] * H, box[2] * W, box[3] * H)]
-    size, kb = save(a[y0:y1, x0:x1], f"{OUT}/{name}.webp", min(2560, x1 - x0), 80)
+    smooth_sky = name == "last"  # one long gradient, which bands at the usual quality
+    size, kb = save(a[y0:y1, x0:x1], f"{OUT}/{name}.webp", min(2560, x1 - x0), 90 if smooth_sky else 80)
+
+    if name == "plate":
+        # a phone shows a thin slice of the aerial at full height, so it needs nearly every source pixel
+        psize, pkb = save(a, f"{OUT}/plate-p.webp", 3200, 70)
+        print(f"plate-p {psize} {pkb}KB")
 
     # phone: tall crop around the subject
     py0, py1 = int(ys[0] * H), int(ys[1] * H)
     ph = py1 - py0
     pw = min(W, round(ph * 9 / 16))
     px = int(min(max(fx * W - pw / 2, 0), W - pw))
-    msize, mkb = save(a[py0:py1, px:px + pw], f"{OUT}/{name}-m.webp", min(1080, pw), 74)
+    msize, mkb = save(a[py0:py1, px:px + pw], f"{OUT}/{name}-m.webp", min(1080, pw), 88 if smooth_sky else 74)
     print(f"{name:7} {size} {kb}KB | phone {msize} {mkb}KB")
